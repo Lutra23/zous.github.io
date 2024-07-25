@@ -12,11 +12,11 @@
     </script>
 <meta name="description" content="# 1.设置无密码登录静态ip以及修改hosts与hostname
 
-1. 首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。">
+首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。">
 <meta property="og:title" content="slurm安装教程">
 <meta property="og:description" content="# 1.设置无密码登录静态ip以及修改hosts与hostname
 
-1. 首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。">
+首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://Lutra23.github.io/zous.github.io/post/slurm-an-zhuang-jiao-cheng.html">
 <meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
@@ -77,20 +77,12 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>1.设置无密码登录静态ip以及修改hosts与hostname</h1>
-<ol>
-<li>
-<p>首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。</p>
-</li>
-<li>
-<p>接着，在主管理节点（假设为master节点）上生成一个SSH密钥对：</p>
-</li>
-</ol>
-<p>ssh-keygen -t rsa -b 2048</p>
+<p>首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。<br>
+接着，在主管理节点（假设为master节点）上生成一个SSH密钥对：</p>
+<p><code class="notranslate">ssh-keygen -t rsa -b 2048</code></p>
 <p>这是为master用户生成的SSH密钥对，而不是root用户的密钥。</p>
-<ol start="3">
-<li>分发公钥到各个节点以便无密码登录：</li>
-</ol>
-<p>sshpass -p 节点登录密码 ssh-copy-id -i ~/.ssh/id_rsa.pub username@节点ip</p>
+<p>分发公钥到各个节点以便无密码登录：</p>
+<p><code class="notranslate">sshpass -p 节点登录密码 ssh-copy-id -i ~/.ssh/id_rsa.pub username@节点ip</code></p>
 <p>其中<code class="notranslate">username</code>是节点上的用户名，<code class="notranslate">节点ip</code>是你要连接的节点的IP地址。</p>
 <h3>下面是一个用于批量修改节点IP地址和主机名的脚本示例：</h3>
 <pre class="notranslate"><code class="notranslate">#!/bin/bash

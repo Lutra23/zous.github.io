@@ -1,16 +1,15 @@
 # 1.设置无密码登录静态ip以及修改hosts与hostname
 
-1. 首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。
+首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。
+接着，在主管理节点（假设为master节点）上生成一个SSH密钥对：
 
-2. 接着，在主管理节点（假设为master节点）上生成一个SSH密钥对：
-
-ssh-keygen -t rsa -b 2048
+`ssh-keygen -t rsa -b 2048`
 
 这是为master用户生成的SSH密钥对，而不是root用户的密钥。
 
-3. 分发公钥到各个节点以便无密码登录：
+分发公钥到各个节点以便无密码登录：
 
-sshpass -p 节点登录密码 ssh-copy-id -i ~/.ssh/id_rsa.pub username@节点ip
+`sshpass -p 节点登录密码 ssh-copy-id -i ~/.ssh/id_rsa.pub username@节点ip`
 
 其中`username`是节点上的用户名，`节点ip`是你要连接的节点的IP地址。
 
