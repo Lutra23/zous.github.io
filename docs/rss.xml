@@ -1,25 +1,26 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>邹帅的博客</title><link>https://Lutra23.github.io/zous.github.io</link><description>分享一些学习心得，以及一些关于量子化学计算的小脚本以及一些安装教程</description><copyright>邹帅的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://Lutra23.github.io/zous.github.io</link></image><lastBuildDate>Thu, 25 Jul 2024 12:31:03 +0000</lastBuildDate><managingEditor>邹帅的博客</managingEditor><ttl>60</ttl><webMaster>邹帅的博客</webMaster><item><title>slurm安装教程</title><link>https://Lutra23.github.io/zous.github.io/post/slurm-an-zhuang-jiao-cheng.html</link><description># 1.设置无密码登录静态ip以及修改hosts与hostname&#13;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>邹帅的博客</title><link>https://Lutra23.github.io/zous.github.io</link><description>分享一些学习心得，以及一些关于量子化学计算的小脚本以及一些安装教程</description><copyright>邹帅的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://Lutra23.github.io/zous.github.io</link></image><lastBuildDate>Thu, 25 Jul 2024 12:39:03 +0000</lastBuildDate><managingEditor>邹帅的博客</managingEditor><ttl>60</ttl><webMaster>邹帅的博客</webMaster><item><title>slurm安装教程</title><link>https://Lutra23.github.io/zous.github.io/post/slurm-an-zhuang-jiao-cheng.html</link><description># 1.设置无密码登录静态ip以及修改hosts与hostname&#13;
 &#13;
 首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。</description><guid isPermaLink="true">https://Lutra23.github.io/zous.github.io/post/slurm-an-zhuang-jiao-cheng.html</guid><pubDate>Thu, 25 Jul 2024 12:13:14 +0000</pubDate></item><item><title>Amber金属建模教程</title><link>https://Lutra23.github.io/zous.github.io/post/Amber-jin-shu-jian-mo-jiao-cheng.html</link><description># Amber金属建模教程&#13;
-金属建模教程（amber）&#13;
+&#13;
 1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB&#13;
 2、将不含金属部分的小分子pdb转化为mol2文件&#13;
 命令：antechamber -i BZE.pdb -fi pdb -o BZE.mol2 -fo mol2 -c bcc -rn BZE -at gaff -pf Y -j 5 -nc 0          #0是体系电荷数，必须要合理准确&#13;
 或者可以使用课题组的方案通过com文件计算出gesp文件再转换为mol2文件，以及frcmod文件&#13;
 3、将mol2文件转换为frcmod文件，用于leap建模&#13;
-命令：parmchk2 -i NDP1.mol2 -f mol2 -o NDP1.frcmod -a Y   &#13;
+`parmchk2 -i NDP1.mol2 -f mol2 -o NDP1.frcmod -a Y   `&#13;
 4、处理金属离子，使用amber自带脚本metalpdb2mol2.py处理，需要先去gpu里拷出来&#13;
 将其放在与金属离子一个目录下&#13;
-运行命令：./metalpdb2mol2.py -i FE.pdb -o FE.mol2 -c 2             #2代表的是离子电荷&#13;
+`./metalpdb2mol2.py -i FE.pdb -o FE.mol2 -c 2  `      #2代表的是离子电荷&#13;
 5、准备处理标准残基PDB&#13;
-将分子对接中的蛋白通过去水，加氢以及去掉所有非标准残基的pdb保存为标准残基pdb&#13;
+&gt;[!IMPORTANT]&#13;
+&gt;将分子对接中的蛋白通过去水，加氢以及去掉所有非标准残基的pdb保存为标准残基pdb&#13;
 这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理&#13;
 使用得到的拓扑文件和坐标文件建模：&#13;
-ambpdb -p 0.15_80_10_pH6.5_1OKL.top -c 0.15_80_10_pH6.5_1OKL.crd &gt; 1OKL_Hpp.pdb&#13;
+`ambpdb -p 0.15_80_10_pH6.5_1OKL.top -c 0.15_80_10_pH6.5_1OKL.crd &gt; 1OKL_Hpp.pdb`&#13;
 6、将所有PDB 文件组合成一个 PDB 文件&#13;
 为了与 PDB 文件中的通常顺序保持一致，一般先放置标准残基，然后是金属离子，然后是配体，最后是水&#13;
-命令： cat FE.pdb CPA.pdb CPB.pdb &gt; FC_pre.pdb    #将所有蛋白合并到FC_pre.pdb中&#13;
+`cat FE.pdb CPA.pdb CPB.pdb &gt; FC_pre.pdb`    #将所有蛋白合并到FC_pre.pdb中&#13;
 7、使用 pdb4amber 重新编号 PDB 文件，注意删除所得 FC.pdb 里面的 TER 行&#13;
-命令：pdb4amber -i FC_pre.pdb -o FC.pdb&#13;
+`pdb4amber -i FC_pre.pdb -o FC.pdb`&#13;
 复合物PDB的原子名称一定要和.mol2文件保持一致，可以将它们放到同一个文件夹，运行pdb.py脚本即可一键修改。</description><guid isPermaLink="true">https://Lutra23.github.io/zous.github.io/post/Amber-jin-shu-jian-mo-jiao-cheng.html</guid><pubDate>Thu, 25 Jul 2024 06:18:00 +0000</pubDate></item><item><title>linux学习</title><link>https://Lutra23.github.io/zous.github.io/post/linux-xue-xi.html</link><description># slurm作业调度系统安装。</description><guid isPermaLink="true">https://Lutra23.github.io/zous.github.io/post/linux-xue-xi.html</guid><pubDate>Thu, 25 Jul 2024 05:40:09 +0000</pubDate></item></channel></rss>
