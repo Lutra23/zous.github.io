@@ -1,5 +1,3 @@
-# Amber金属建模教程
-
 1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB
 2、将不含金属部分的小分子pdb转化为mol2文件
 命令：antechamber -i BZE.pdb -fi pdb -o BZE.mol2 -fo mol2 -c bcc -rn BZE -at gaff -pf Y -j 5 -nc 0          #0是体系电荷数，必须要合理准确

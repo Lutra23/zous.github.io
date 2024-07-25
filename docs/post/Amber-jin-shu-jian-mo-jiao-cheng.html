@@ -10,9 +10,7 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="# Amber金属建模教程
-
-1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB
+<meta name="description" content="1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB
 2、将不含金属部分的小分子pdb转化为mol2文件
 命令：antechamber -i BZE.pdb -fi pdb -o BZE.mol2 -fo mol2 -c bcc -rn BZE -at gaff -pf Y -j 5 -nc 0          #0是体系电荷数，必须要合理准确
 或者可以使用课题组的方案通过com文件计算出gesp文件再转换为mol2文件，以及frcmod文件
@@ -35,9 +33,7 @@
 `pdb4amber -i FC_pre.pdb -o FC.pdb`
 复合物PDB的原子名称一定要和.mol2文件保持一致，可以将它们放到同一个文件夹，运行pdb.py脚本即可一键修改。">
 <meta property="og:title" content="Amber金属建模教程">
-<meta property="og:description" content="# Amber金属建模教程
-
-1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB
+<meta property="og:description" content="1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB
 2、将不含金属部分的小分子pdb转化为mol2文件
 命令：antechamber -i BZE.pdb -fi pdb -o BZE.mol2 -fo mol2 -c bcc -rn BZE -at gaff -pf Y -j 5 -nc 0          #0是体系电荷数，必须要合理准确
 或者可以使用课题组的方案通过com文件计算出gesp文件再转换为mol2文件，以及frcmod文件
@@ -118,8 +114,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><h1>Amber金属建模教程</h1>
-<p>1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB<br>
+<div class="markdown-body" id="postBody"><p>1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB<br>
 2、将不含金属部分的小分子pdb转化为mol2文件<br>
 命令：antechamber -i BZE.pdb -fi pdb -o BZE.mol2 -fo mol2 -c bcc -rn BZE -at gaff -pf Y -j 5 -nc 0          #0是体系电荷数，必须要合理准确<br>
 或者可以使用课题组的方案通过com文件计算出gesp文件再转换为mol2文件，以及frcmod文件<br>
