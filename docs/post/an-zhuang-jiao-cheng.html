@@ -10,9 +10,51 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="">
+<meta name="description" content="# Amber金属建模教程
+金属建模教程（amber）
+1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB
+2、将不含金属部分的小分子pdb转化为mol2文件
+命令：antechamber -i BZE.pdb -fi pdb -o BZE.mol2 -fo mol2 -c bcc -rn BZE -at gaff -pf Y -j 5 -nc 0          #0是体系电荷数，必须要合理准确
+或者可以使用课题组的方案通过com文件计算出gesp文件再转换为mol2文件，以及frcmod文件
+3、将mol2文件转换为frcmod文件，用于leap建模
+命令：parmchk2 -i NDP1.mol2 -f mol2 -o NDP1.frcmod -a Y   
+4、处理金属离子，使用amber自带脚本metalpdb2mol2.py处理，需要先去gpu里拷出来
+将其放在与金属离子一个目录下
+运行命令：./metalpdb2mol2.py -i FE.pdb -o FE.mol2 -c 2             #2代表的是离子电荷
+5、准备处理标准残基PDB
+将分子对接中的蛋白通过去水，加氢以及去掉所有非标准残基的pdb保存为标准残基pdb
+这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理
+使用得到的拓扑文件和坐标文件建模：
+ambpdb -p 0.15_80_10_pH6.5_1OKL.top -c 0.15_80_10_pH6.5_1OKL.crd > 1OKL_Hpp.pdb
+6、将所有PDB 文件组合成一个 PDB 文件
+为了与 PDB 文件中的通常顺序保持一致，一般先放置标准残基，然后是金属离子，然后是配体，最后是水
+命令： cat FE.pdb CPA.pdb CPB.pdb > FC_pre.pdb    #将所有蛋白合并到FC_pre.pdb中
+7、使用 pdb4amber 重新编号 PDB 文件，注意删除所得 FC.pdb 里面的 TER 行
+命令：pdb4amber -i FC_pre.pdb -o FC.pdb
+复合物PDB的原子名称一定要和.mol2文件保持一致，可以将它们放到同一个文件夹，运行pdb.py脚本即可一键修改。">
 <meta property="og:title" content="安装教程">
-<meta property="og:description" content="">
+<meta property="og:description" content="# Amber金属建模教程
+金属建模教程（amber）
+1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB
+2、将不含金属部分的小分子pdb转化为mol2文件
+命令：antechamber -i BZE.pdb -fi pdb -o BZE.mol2 -fo mol2 -c bcc -rn BZE -at gaff -pf Y -j 5 -nc 0          #0是体系电荷数，必须要合理准确
+或者可以使用课题组的方案通过com文件计算出gesp文件再转换为mol2文件，以及frcmod文件
+3、将mol2文件转换为frcmod文件，用于leap建模
+命令：parmchk2 -i NDP1.mol2 -f mol2 -o NDP1.frcmod -a Y   
+4、处理金属离子，使用amber自带脚本metalpdb2mol2.py处理，需要先去gpu里拷出来
+将其放在与金属离子一个目录下
+运行命令：./metalpdb2mol2.py -i FE.pdb -o FE.mol2 -c 2             #2代表的是离子电荷
+5、准备处理标准残基PDB
+将分子对接中的蛋白通过去水，加氢以及去掉所有非标准残基的pdb保存为标准残基pdb
+这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理
+使用得到的拓扑文件和坐标文件建模：
+ambpdb -p 0.15_80_10_pH6.5_1OKL.top -c 0.15_80_10_pH6.5_1OKL.crd > 1OKL_Hpp.pdb
+6、将所有PDB 文件组合成一个 PDB 文件
+为了与 PDB 文件中的通常顺序保持一致，一般先放置标准残基，然后是金属离子，然后是配体，最后是水
+命令： cat FE.pdb CPA.pdb CPB.pdb > FC_pre.pdb    #将所有蛋白合并到FC_pre.pdb中
+7、使用 pdb4amber 重新编号 PDB 文件，注意删除所得 FC.pdb 里面的 TER 行
+命令：pdb4amber -i FC_pre.pdb -o FC.pdb
+复合物PDB的原子名称一定要和.mol2文件保持一致，可以将它们放到同一个文件夹，运行pdb.py脚本即可一键修改。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://Lutra23.github.io/zous.github.io/post/an-zhuang-jiao-cheng.html">
 <meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
@@ -72,7 +114,98 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"></div>
+<div class="markdown-body" id="postBody"><h1>Amber金属建模教程</h1>
+<p>金属建模教程（amber）<br>
+1、准备非标准残基的构建：将分子对接得到的小分子进行加氢处理，将金属单独扣出，建立一个PDB<br>
+2、将不含金属部分的小分子pdb转化为mol2文件<br>
+命令：antechamber -i BZE.pdb -fi pdb -o BZE.mol2 -fo mol2 -c bcc -rn BZE -at gaff -pf Y -j 5 -nc 0          #0是体系电荷数，必须要合理准确<br>
+或者可以使用课题组的方案通过com文件计算出gesp文件再转换为mol2文件，以及frcmod文件<br>
+3、将mol2文件转换为frcmod文件，用于leap建模<br>
+命令：parmchk2 -i NDP1.mol2 -f mol2 -o NDP1.frcmod -a Y<br>
+4、处理金属离子，使用amber自带脚本metalpdb2mol2.py处理，需要先去gpu里拷出来<br>
+将其放在与金属离子一个目录下<br>
+运行命令：./metalpdb2mol2.py -i FE.pdb -o FE.mol2 -c 2             #2代表的是离子电荷<br>
+5、准备处理标准残基PDB<br>
+将分子对接中的蛋白通过去水，加氢以及去掉所有非标准残基的pdb保存为标准残基pdb<br>
+这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理<br>
+使用得到的拓扑文件和坐标文件建模：<br>
+ambpdb -p 0.15_80_10_pH6.5_1OKL.top -c 0.15_80_10_pH6.5_1OKL.crd &gt; 1OKL_Hpp.pdb<br>
+6、将所有PDB 文件组合成一个 PDB 文件<br>
+为了与 PDB 文件中的通常顺序保持一致，一般先放置标准残基，然后是金属离子，然后是配体，最后是水<br>
+命令： cat FE.pdb CPA.pdb CPB.pdb &gt; FC_pre.pdb    #将所有蛋白合并到FC_pre.pdb中<br>
+7、使用 pdb4amber 重新编号 PDB 文件，注意删除所得 FC.pdb 里面的 TER 行<br>
+命令：pdb4amber -i FC_pre.pdb -o FC.pdb<br>
+复合物PDB的原子名称一定要和.mol2文件保持一致，可以将它们放到同一个文件夹，运行pdb.py脚本即可一键修改。（该脚本在md教程里）<br>
+8、手动创建输入文件：FC.in<br>
+'''# 指定原始的 pdb 文件名为 FC.pdb，该文件包含了模拟中要使用的分子结构<br>
+original_pdb=FC.pdb<br>
+#指定分子群的名称为 FC，用于标识模拟系统中的特定组分<br>
+group_name=FC<br>
+#指定范德华力的截断半径为 2.5 Å，超出此距离的相互作用将被截断<br>
+cut_off=2.5<br>
+#指定要添加到模拟系统中的离子的 id 号码为 1，这个号码是原子多少号，而不是残基号<br>
+ion_ids=1<br>
+#指定包含要添加到模拟系统中的离子结构的 mol2 文件名为 FE.mol2<br>
+ion_mol2files=FE.mol2<br>
+#指定包含非标准氨基酸（NAA）的 mol2 文件名，这些文件包含了模拟系统中其他非标准氨基酸的结构<br>
+naa_mol2files="CPA.mol2 CPB.mol2"<br>
+#指定包含非标准氨基酸力场参数的 frcmod 文件名，这些文件包含了模拟系统中其他非标准氨基酸的力场参数<br>
+frcmod_files="CPA.frcmod CPB.frcmod"<br>
+#指定额外的残基号码为 2 和 3，这个是残基好，这些残基可能需要额外处理或特殊设置<br>
+additional_resids="2 3" '''<br>
+命令：MCPB.py -i FC.in -s 1<br>
+9、上面过程将生成小型（small）、标准（standard）和大型（large）模型的 PDB 和指纹（fingerprint）文件。小型和大型模型的高斯输入文件（.com）也会生成。大型模型的高斯输入文件将首先对氢原子执行优化，以纠正任何位置不佳的氢原子。如果得到的pdb文件中金属不和原子配位（对于你需要配位但没有），需要将得到的指纹文件（fingerprint）进行建连关系，指纹文件的原子类型会被自动改掉，需要之后自己手动修改。<br>
+Fingerprint文夹必须要检查修改<br>
+在末尾添加：LINK 原子编号1-原子名1 原子编号2-原子名2<br>
+10、执行 Gaussian/GAMESS-US 计算(如果已经优化过结构或者结构合理即可对small跳过结构优化，但最好还是做一下)对三个.com文件（其中fc的计算需要用到opt的chk文件）进行高斯计算，得到的chk文件转化为fchk复制到同一文件夹。确保高斯输入文件的多重度正确。<br>
+如果后来者能执行并行计算最好，比较省时间。<br>
+11. 执行最终建模<br>
+需要两个chk文件，和指纹文件<br>
+命令：MCPB.py -i FC.in -s 2<br>
+观察输出文件如果没有键长键角的输出，证明成键没有被正确识别（对于你需要配位但没有），可以得到一个 FC_mcpbpy.frcmod 文件，该文件将用于 leap 建模<br>
+使用 ChgModB 执行 RESP 电荷拟合并为金属位点残基生成 mol2 文件（需要XX_large_mk.log文件由XX_large_mk.com文件计算所得）<br>
+命令：MCPB.py -i FC.in -s 3a    #3a所有电荷可变<br>
+生成 tleap 输入文件<br>
+命令：MCPB.py -i FC.in -s 4<br>
+使用 tleap 生成拓扑和坐标文件：<br>
+命令：tleap -s -f FC_tleap.in &gt; FC_tleap.out<br>
+现在生成了溶液中的拓扑和坐标文件（FC_solv.prmtop 和 FC_solv.inpcrd），以及真空中的拓扑和坐标文件（FC_dry.prmtop 和 FC_dry.inpcrd）<br>
+12.检查是否合理<br>
+使用 cpptraj 检查原子编号问题<br>
+cpptraj -p FC_solv.prmtop</p>
+<p>如果报告如下错误：<br>
+Error: Atom XXX was assigned a lower molecule # than previous atom. This can<br>
+Error: happen if 1) bond information is incorrect or missing, or 2) if the<br>
+Error: atom numbering in molecules is not sequential. If topology did not<br>
+Error: originally contain bond info, 1) can potentially be fixed by<br>
+Error: increasing the bondsearch cutoff offset (currently 0.200). 2) can be<br>
+Error: fixed by either using the 'fixatomorder' command, or using<br>
+Error: the 'setMolecules' command in parmed.py.<br>
+Error: Could not determine molecule information for FC_solv.prmtop.<br>
+Error: SetSolventInfo: No molecule information.<br>
+Error: Could not determine solvent information for FC_solv.prmtop<br>
+使用 cpptraj 来修复原子顺序<br>
+fixatord.in 脚本内容：<br>
+fixatomorder outprefix fixed<br>
+trajout restart fixed.FC_solv.inpcrd<br>
+run<br>
+quit<br>
+命令：cpptraj -p FC_solv.prmtop -c FC_solv.inpcrd -i fixatord.in &gt; fixatord.out<br>
+再次检查有没有错误，没有错误继续建模<br>
+使用 ParmEd 来检查金属位点参数<br>
+创建脚本mcpbpy_parmed.in<br>
+printBonds :FE1                #FE1是金属掩码，可以在输出的mol2文件查到<br>
+printAngles :FE1<br>
+printDihedrals :FE1<br>
+printDetails :FE1<br>
+运行命令：parmed -i mcpbpy_parmed.in -p FC_solv.prmtop<br>
+金属离子相关参数遵循以下标准：<br>
+金属离子与其配位原子的键力常数小于 200 kcal/(mol<em>Angstrom^2)，平衡键距离小于 2.8 埃；<br>
+与金属离子相关的角力常数通常小于100 kcal/(mol</em>Rad^2)，而平衡角值大于100度；<br>
+对于涉及金属的二面角，所有或大部分二面角势垒为零；<br>
+金属离子的RESP电荷小于其氧化态，通常甚至小于+1；<br>
+一种金属离子的 LJ 半径通常大于 1.0 埃。<br>
+无误即可进行MD模拟</p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
