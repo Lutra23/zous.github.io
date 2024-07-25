@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>邹帅的博客</title><link>https://Lutra23.github.io/zous.github.io</link><description>分享一些学习心得，以及一些关于量子化学计算的小脚本以及一些安装教程</description><copyright>邹帅的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://Lutra23.github.io/zous.github.io</link></image><lastBuildDate>Thu, 25 Jul 2024 12:39:03 +0000</lastBuildDate><managingEditor>邹帅的博客</managingEditor><ttl>60</ttl><webMaster>邹帅的博客</webMaster><item><title>slurm安装教程</title><link>https://Lutra23.github.io/zous.github.io/post/slurm-an-zhuang-jiao-cheng.html</link><description># 1.设置无密码登录静态ip以及修改hosts与hostname&#13;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>邹帅的博客</title><link>https://Lutra23.github.io/zous.github.io</link><description>分享一些学习心得，以及一些关于量子化学计算的小脚本以及一些安装教程</description><copyright>邹帅的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://Lutra23.github.io/zous.github.io</link></image><lastBuildDate>Thu, 25 Jul 2024 12:39:39 +0000</lastBuildDate><managingEditor>邹帅的博客</managingEditor><ttl>60</ttl><webMaster>邹帅的博客</webMaster><item><title>slurm安装教程</title><link>https://Lutra23.github.io/zous.github.io/post/slurm-an-zhuang-jiao-cheng.html</link><description># 1.设置无密码登录静态ip以及修改hosts与hostname&#13;
 &#13;
 首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。</description><guid isPermaLink="true">https://Lutra23.github.io/zous.github.io/post/slurm-an-zhuang-jiao-cheng.html</guid><pubDate>Thu, 25 Jul 2024 12:13:14 +0000</pubDate></item><item><title>Amber金属建模教程</title><link>https://Lutra23.github.io/zous.github.io/post/Amber-jin-shu-jian-mo-jiao-cheng.html</link><description># Amber金属建模教程&#13;
 &#13;
@@ -15,7 +15,8 @@
 5、准备处理标准残基PDB&#13;
 &gt;[!IMPORTANT]&#13;
 &gt;将分子对接中的蛋白通过去水，加氢以及去掉所有非标准残基的pdb保存为标准残基pdb&#13;
-这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理&#13;
+   这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理&#13;
+&#13;
 使用得到的拓扑文件和坐标文件建模：&#13;
 `ambpdb -p 0.15_80_10_pH6.5_1OKL.top -c 0.15_80_10_pH6.5_1OKL.crd &gt; 1OKL_Hpp.pdb`&#13;
 6、将所有PDB 文件组合成一个 PDB 文件&#13;

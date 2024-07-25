@@ -24,7 +24,8 @@
 5、准备处理标准残基PDB
 >[!IMPORTANT]
 >将分子对接中的蛋白通过去水，加氢以及去掉所有非标准残基的pdb保存为标准残基pdb
-这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理
+   这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理
+
 使用得到的拓扑文件和坐标文件建模：
 `ambpdb -p 0.15_80_10_pH6.5_1OKL.top -c 0.15_80_10_pH6.5_1OKL.crd > 1OKL_Hpp.pdb`
 6、将所有PDB 文件组合成一个 PDB 文件
@@ -48,7 +49,8 @@
 5、准备处理标准残基PDB
 >[!IMPORTANT]
 >将分子对接中的蛋白通过去水，加氢以及去掉所有非标准残基的pdb保存为标准残基pdb
-这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理
+   这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理
+
 使用得到的拓扑文件和坐标文件建模：
 `ambpdb -p 0.15_80_10_pH6.5_1OKL.top -c 0.15_80_10_pH6.5_1OKL.crd > 1OKL_Hpp.pdb`
 6、将所有PDB 文件组合成一个 PDB 文件
@@ -128,8 +130,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <code class="notranslate">./metalpdb2mol2.py -i FE.pdb -o FE.mol2 -c 2  </code>      #2代表的是离子电荷<br>
 5、准备处理标准残基PDB</p>
 <div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>将分子对接中的蛋白通过去水，加氢以及去掉所有非标准残基的pdb保存为标准残基pdb<br>
-这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理<br>
-使用得到的拓扑文件和坐标文件建模：<br>
+这里建议使用H++，来进行加氢，输出的与amber配套pdb十分合理</p>
+</div>
+<p>使用得到的拓扑文件和坐标文件建模：<br>
 <code class="notranslate">ambpdb -p 0.15_80_10_pH6.5_1OKL.top -c 0.15_80_10_pH6.5_1OKL.crd &gt; 1OKL_Hpp.pdb</code><br>
 6、将所有PDB 文件组合成一个 PDB 文件<br>
 为了与 PDB 文件中的通常顺序保持一致，一般先放置标准残基，然后是金属离子，然后是配体，最后是水<br>
@@ -137,7 +140,6 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 7、使用 pdb4amber 重新编号 PDB 文件，注意删除所得 FC.pdb 里面的 TER 行<br>
 <code class="notranslate">pdb4amber -i FC_pre.pdb -o FC.pdb</code><br>
 复合物PDB的原子名称一定要和.mol2文件保持一致，可以将它们放到同一个文件夹，运行pdb.py脚本即可一键修改。（该脚本在md教程里）</p>
-</div>
 <pre class="notranslate"><code class="notranslate">手动创建输入文件：FC.in
 # 指定原始的 pdb 文件名为 FC.pdb，该文件包含了模拟中要使用的分子结构
 original_pdb=FC.pdb
