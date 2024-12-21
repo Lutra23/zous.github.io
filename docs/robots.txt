@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://blog.liyifan.xyz/rss.xml
