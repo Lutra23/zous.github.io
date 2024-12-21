@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="en">
+<html data-color-mode="light" data-dark-theme="github-light" data-light-theme="light_tritanopia" lang="zh-CN">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
-    <script src='https://lutra23.github.io/zous.github.io/assets/GmeekBSZ.js'></script><script src='https://lutra23.github.io/zous.github.io/assets/yifantheme.js'></script><script src='https://lutra23.github.io/zous.github.io/assets/live2d.js'></script>
-    <link rel="icon" href="https://www.helloimg.com/i/2024/12/21/6766cb2d0a467.png">
-<meta name="description" content="Lutra的博客 search page">
-<title>Lutra的博客 - Tag</title>
+    <script src='https://blog.liyifan.xyz/assets/GmeekBSZ.js'></script><script src='https://blog.liyifan.xyz/assets/yifantheme.js'></script><script src='https://blog.liyifan.xyz/assets/live2d.js'></script>
+    <link rel="icon" href="https://img.liyifan.xyz/file/899bc692dbb6d6d7b994f.jpg">
+<meta name="description" content="LIYIFAN的备忘录 search page">
+<title>LIYIFAN的备忘录 - Tag</title>
 
 </head>
 <style>
@@ -51,17 +51,17 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <div class="title-right">
     <div class="subnav-search">
         <input type="search" class="form-control subnav-search-input float-left" aria-label="Search site" value="" style="height:32px;">
-        <button class="btn float-left" type="submit" onclick="javascript:searchShow()">Search</button>
+        <button class="btn float-left" type="submit" onclick="javascript:searchShow()">搜索</button>
         <svg class="subnav-search-icon octicon octicon-search" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
             <path id="searchSVG" fill-rule="evenodd"></path>
         </svg>
     </div>
-    <a href="https://lutra23.github.io/zous.github.io/" id="buttonHome" class="btn btn-invisible circle" title="home">
+    <a href="https://blog.liyifan.xyz" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
             <path id="pathHome" fill-rule="evenodd"></path>
         </svg>
     </a>
-    <a class="btn btn-invisible circle" onclick="modeSwitch()" title="switch theme">
+    <a class="btn btn-invisible circle" onclick="modeSwitch()" title="切换主题"style="display:none;">
         <svg class="octicon" width="16" height="16" >
             <path id="themeSwitch" fill-rule="evenodd"></path>
         </svg>
@@ -73,7 +73,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <nav class="SideNav"></nav>
 <div class="notFind" style="display:none;font-size:24px;margin:8px;">Not Find</div>
 </div>
-    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://lutra23.github.io/zous.github.io/">Lutra的博客</a></div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://blog.liyifan.xyz">LIYIFAN的备忘录</a></div>
 <div id="footer2">
     <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
 </div>
@@ -82,11 +82,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 var now=new Date();
 document.getElementById("copyrightYear").innerHTML=now.getFullYear();
 
-if("2024-07-03"!=""){
-    var startSite=new Date("2024-07-03");
+if("07/03/2024"!=""){
+    var startSite=new Date("07/03/2024");
     var diff=now.getTime()-startSite.getTime();
     var diffDay=Math.floor(diff/(1000*60*60*24));
-    document.getElementById("runday").innerHTML="run "+diffDay+" days"+" • ";
+    document.getElementById("runday").innerHTML="网站运行"+diffDay+"天"+" • ";
 }
 </script></div>
 </body>
@@ -208,7 +208,7 @@ function setClassDisplay(label){
     let lists = document.getElementsByClassName("lists");
     let tagTitle = document.getElementsByClassName("tagTitle")[0];
     tagTitle.innerHTML="Tag #"+label;
-    document.title=label+" - Lutra的博客";
+    document.title=label+" - LIYIFAN的备忘录";
     document.getElementsByClassName("subnav-search-input")[0].value='';
     if(label=="All"){
         for(let i = 0; i < lists.length; i++){lists[i].style.display='block';}
@@ -236,8 +236,8 @@ function searchShow(){
     let tagTitle = document.getElementsByClassName("tagTitle")[0];
     let searchInput = document.getElementsByClassName("subnav-search-input")[0].value;
     tagTitle.innerHTML="Search #"+searchInput;
-    if(searchInput==''){document.title="Search - Lutra的博客";}
-    else{document.title=searchInput+" - Lutra的博客";}
+    if(searchInput==''){document.title="Search - LIYIFAN的备忘录";}
+    else{document.title=searchInput+" - LIYIFAN的备忘录";}
     let a=0;
     window.location.hash="#"+(searchInput);
     for(let i = 0; i < lists.length; i++){
