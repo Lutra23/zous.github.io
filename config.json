@@ -1,121 +1,21 @@
-<!DOCTYPE html>
-<html lang="zh-CN" data-color-mode="light" data-dark-theme="dark" data-light-theme="light">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>加载中...</title>
-    <link href="https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css" rel="stylesheet">
-    <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg">
-    <style>
-        body {
-            box-sizing: border-box;
-            min-width: 200px;
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 45px;
-            font-size: 16px;
-            font-family: sans-serif;
-            line-height: 1.25;
-        }
-
-        #header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-        }
-
-        .avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-left: 16px;
-        }
-
-        #content {
-            margin-top: 16px;
-        }
-
-        #footer {
-            margin-top: 32px;
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <div id="header">
-        <div class="blog-info">
-            <img id="avatar" class="avatar" src="" alt="Avatar">
-            <span id="blogTitle" class="title">加载中...</span>
-        </div>
-        <a id="homeLink" href="#" target="_blank">主页</a>
-    </div>
-
-    <!-- Content -->
-    <div id="content">
-        <p>博客内容正在加载...</p>
-    </div>
-
-    <!-- Footer -->
-    <div id="footer">
-        <p id="bottomText">❤️ 加载中...</p>
-        <p id="runDay">网站已运行 0 天</p>
-    </div>
-
-    <!-- Script -->
-    <script>
-        // 加载 JSON 配置
-        fetch('config.json')
-            .then(response => response.json())
-            .then(config => {
-                // 设置标题和头像
-                document.title = config.title;
-                document.getElementById('avatar').src = config.avatarUrl;
-                document.getElementById('blogTitle').textContent = config.displayTitle;
-
-                // 设置主页链接
-                const homeLink = document.getElementById('homeLink');
-                homeLink.href = config.homeUrl;
-                homeLink.textContent = "主页";
-
-                // 设置底部文字
-                document.getElementById('bottomText').textContent = config.bottomText;
-
-                // 设置网站运行天数
-                const startSite = new Date(config.startSite);
-                const now = new Date();
-                const diffTime = now.getTime() - startSite.getTime();
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                document.getElementById('runDay').textContent = `网站已运行 ${diffDays} 天`;
-
-                // 动态加载脚本
-                const allHead = document.createElement('div');
-                allHead.innerHTML = config.allHead;
-                document.body.appendChild(allHead);
-
-                // 动态加载脚本到首页
-                const indexScript = document.createElement('div');
-                indexScript.innerHTML = config.indexScript;
-                document.body.appendChild(indexScript);
-
-                // 加载其他必要脚本
-                const script = document.createElement('div');
-                script.innerHTML = config.script;
-                document.body.appendChild(script);
-            })
-            .catch(error => console.error('加载配置失败：', error));
-    </script>
-</body>
-</html>
+{
+    "title":"LIYIFAN的备忘录",
+    "subTitle":"❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",
+    "displayTitle":"LIYIFAN",
+    "avatarUrl":"https://img.liyifan.xyz/file/899bc692dbb6d6d7b994f.jpg",
+    "homeUrl":"https://blog.liyifan.xyz",
+    "startSite":"07/03/2024",
+    "onePageListNum":15,
+    "commentLabelColor":"#006b75",
+    "yearColorList":["#bc4c00", "#0969da", "#1f883d", "#A333D0"],
+    "i18n":"CN",
+    "themeMode":"fix",
+    "dayTheme":"light_tritanopia",
+    "nightTheme":"github-light",
+    "bottomText":"❤️ 转载文章请注明出处，谢谢！❤️",
+    "showPostSource":0,
+    "script":"<script src='https://blog.liyifan.xyz/assets/cat_backtotop.js'></script><script src='https://blog.liyifan.xyz/assets/lazyload.js'></script><script src='https://blog.liyifan.xyz/assets/viewimg.js'></script>",
+    "indexScript":"<script src='https://blog.liyifan.xyz/assets/NumPagination.js'></script>",
+    "allHead":"<script src='https://blog.liyifan.xyz/assets/GmeekBSZ.js'></script><script src='https://blog.liyifan.xyz/assets/yifantheme.js'></script><script src='https://blog.liyifan.xyz/assets/live2d.js'></script>",
+    "GMEEK_VERSION":"last"
+}
