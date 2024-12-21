@@ -10,18 +10,20 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="# 1.设置无密码登录静态ip以及修改hosts与hostname
+<meta name="description" content="```markdown
+# 1. 设置无密码登录静态 IP 以及修改 hosts 与 hostname
 
-首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。">
+首先，确保你的 DHCP 服务器正在运行，并且可以通过它来查看分配给节点的 IP 地址。">
 <meta property="og:title" content="slurm安装教程">
-<meta property="og:description" content="# 1.设置无密码登录静态ip以及修改hosts与hostname
+<meta property="og:description" content="```markdown
+# 1. 设置无密码登录静态 IP 以及修改 hosts 与 hostname
 
-首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。">
+首先，确保你的 DHCP 服务器正在运行，并且可以通过它来查看分配给节点的 IP 地址。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://Lutra23.github.io/zous.github.io/post/slurm-an-zhuang-jiao-cheng.html">
 <meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
 <title>slurm安装教程</title>
-
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
 </head>
@@ -87,186 +89,284 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><h1>1.设置无密码登录静态ip以及修改hosts与hostname</h1>
-<p>首先，确保你的DHCP服务器正在运行，并且可以通过它来查看分配给节点的IP地址。<br>
-接着，在主管理节点（假设为master节点）上生成一个SSH密钥对：</p>
-<p><code class="notranslate">ssh-keygen -t rsa -b 2048</code></p>
-<p>这是为master用户生成的SSH密钥对，而不是root用户的密钥。</p>
+<div class="markdown-body" id="postBody"><div class="highlight highlight-text-md"><pre class="notranslate"><span class="pl-mh"># <span class="pl-en">1. 设置无密码登录静态 IP 以及修改 hosts 与 hostname</span></span>
+
+首先，确保你的 DHCP 服务器正在运行，并且可以通过它来查看分配给节点的 IP 地址。  
+接着，在主管理节点（假设为 master 节点）上生成一个 SSH 密钥对：
+
+<span class="pl-s">```</span><span class="pl-en">bash</span>
+ssh-keygen -t rsa -b 2048</pre></div>
+<p>这是为 master 用户生成的 SSH 密钥对，而不是 root 用户的密钥。</p>
 <p>分发公钥到各个节点以便无密码登录：</p>
-<p><code class="notranslate">sshpass -p 节点登录密码 ssh-copy-id -i ~/.ssh/id_rsa.pub username@节点ip</code></p>
-<p>其中<code class="notranslate">username</code>是节点上的用户名，<code class="notranslate">节点ip</code>是你要连接的节点的IP地址。</p>
-<h3>下面是一个用于批量修改节点IP地址和主机名的脚本示例：</h3>
-<pre class="notranslate"><code class="notranslate">#!/bin/bash
-IPS=("172.26.96.117" "172.26.96.118" "172.26.96.119") # 当前的节点IP地址 HOSTNAMES=("node1" "node2" "node3") # 对应的主机名 NEW_IPS=("192.168.1.201" "192.168.1.202" "192.168.1.203") # 对应的新静态IP地址
-for i in "${!IPS[@]}" do IP=${IPS[$i]} HOSTNAME=${HOSTNAMES[$i]} NEW_IP=${NEW_IPS[$i]}
-   ssh root@$IP "hostnamectl set-hostname $HOSTNAME"
-   ssh root@$IP "echo '$NEW_IP $HOSTNAME' &gt;&gt; /etc/hosts"
+<div class="highlight highlight-source-shell"><pre class="notranslate">sshpass -p 节点登录密码 ssh-copy-id -i <span class="pl-k">~</span>/.ssh/id_rsa.pub username@节点ip</pre></div>
+<p>其中 <code class="notranslate">username</code> 是节点上的用户名，<code class="notranslate">节点ip</code> 是你要连接的节点的 IP 地址。</p>
+<h3>批量修改节点 IP 地址和主机名的脚本示例：</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
+IPS=(<span class="pl-s"><span class="pl-pds">"</span>172.26.96.117<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>172.26.96.118<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>172.26.96.119<span class="pl-pds">"</span></span>) <span class="pl-c"><span class="pl-c">#</span> 当前的节点 IP 地址</span>
+HOSTNAMES=(<span class="pl-s"><span class="pl-pds">"</span>node1<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>node2<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>node3<span class="pl-pds">"</span></span>) <span class="pl-c"><span class="pl-c">#</span> 对应的主机名</span>
+NEW_IPS=(<span class="pl-s"><span class="pl-pds">"</span>192.168.1.201<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>192.168.1.202<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>192.168.1.203<span class="pl-pds">"</span></span>) <span class="pl-c"><span class="pl-c">#</span> 对应的新静态 IP 地址</span>
 
-   #配置静态IP地址（根据你的系统使用适当的配置方式，以下是netplan配置的示例）
-   ssh root@$IP "cat &lt;&lt;EOF &gt; /etc/netplan/01-netcfg.yaml
-   network:
-     version: 2
-     ethernets:
-       ens33:  # 替换为你的网卡名称
-         dhcp4: no
-         addresses: [$NEW_IP/24]
-         gateway4: 192.168.1.1  # 替换为你的网关
-         nameservers:
-           addresses: [8.8.8.8, 8.8.4.4]
-   EOF"
+<span class="pl-k">for</span> <span class="pl-smi">i</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${<span class="pl-k">!</span>IPS[@]}</span><span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-k">do</span> 
+   IP=<span class="pl-smi">${IPS[$i]}</span> 
+   HOSTNAME=<span class="pl-smi">${HOSTNAMES[$i]}</span> 
+   NEW_IP=<span class="pl-smi">${NEW_IPS[$i]}</span>
+   
+   ssh root@<span class="pl-smi">$IP</span> <span class="pl-s"><span class="pl-pds">"</span>hostnamectl set-hostname <span class="pl-smi">$HOSTNAME</span><span class="pl-pds">"</span></span>
+   ssh root@<span class="pl-smi">$IP</span> <span class="pl-s"><span class="pl-pds">"</span>echo '<span class="pl-smi">$NEW_IP</span> <span class="pl-smi">$HOSTNAME</span>' &gt;&gt; /etc/hosts<span class="pl-pds">"</span></span>
 
-   ssh root@$IP "netplan apply"
-done
-</code></pre>
-<h1>2.安装和配置NFS：使用nfs-kernel-server和nfs-common包设置NFS服务器，为节点间提供共享存储</h1>
-<p>打开终端，使用以下命令安装NFS服务器端和客户端：</p>
-<pre class="notranslate"><code class="notranslate">#在master主机
-sudo apt-get install nfs-kernel-server
-</code></pre>
-<pre class="notranslate"><code class="notranslate">#在节点机
-sudo apt-get install nfs-common
-</code></pre>
-<h2>配置NFS共享目录</h2>
-<p>/opt是要共享的文件夹,172.16.0.0/24是能够连到master主机的网络范围</p>
-<pre class="notranslate"><code class="notranslate">echo "/opt 172.16.0.0/24(rw,sync,no_root_squash)" | sudo tee -a /etc/exports 
-</code></pre>
-<h3>重启NFS服务，并确保它设置为开机自启：</h3>
-<pre class="notranslate"><code class="notranslate">sudo systemctl restart nfs-kernel-server
+   <span class="pl-c"><span class="pl-c">#</span> 配置静态 IP 地址（根据你的系统使用适当的配置方式，以下是 netplan 配置的示例）</span>
+   ssh root@<span class="pl-smi">$IP</span> <span class="pl-s"><span class="pl-pds">"</span>cat &lt;&lt;EOF &gt; /etc/netplan/01-netcfg.yaml</span>
+<span class="pl-s">   network:</span>
+<span class="pl-s">     version: 2</span>
+<span class="pl-s">     ethernets:</span>
+<span class="pl-s">       ens33:  # 替换为你的网卡名称</span>
+<span class="pl-s">         dhcp4: no</span>
+<span class="pl-s">         addresses: [<span class="pl-smi">$NEW_IP</span>/24]</span>
+<span class="pl-s">         gateway4: 192.168.1.1  # 替换为你的网关</span>
+<span class="pl-s">         nameservers:</span>
+<span class="pl-s">           addresses: [8.8.8.8, 8.8.4.4]</span>
+<span class="pl-s">   EOF<span class="pl-pds">"</span></span>
+
+   ssh root@<span class="pl-smi">$IP</span> <span class="pl-s"><span class="pl-pds">"</span>netplan apply<span class="pl-pds">"</span></span>
+<span class="pl-k">done</span></pre></div>
+<hr>
+<h1>2. 安装和配置 NFS：使用 nfs-kernel-server 和 nfs-common 包设置 NFS 服务器，为节点间提供共享存储</h1>
+<p>打开终端，使用以下命令安装 NFS 服务器端和客户端：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 在 master 主机</span>
+sudo apt-get install nfs-kernel-server</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 在节点机</span>
+sudo apt-get install nfs-common</pre></div>
+<h2>配置 NFS 共享目录</h2>
+<p><code class="notranslate">/opt</code> 是要共享的文件夹，<code class="notranslate">172.16.0.0/24</code> 是能够连到 master 主机的网络范围。</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>/opt 172.16.0.0/24(rw,sync,no_root_squash)<span class="pl-pds">"</span></span> <span class="pl-k">|</span> sudo tee -a /etc/exports</pre></div>
+<h3>重启 NFS 服务，并确保它设置为开机自启：</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl restart nfs-kernel-server
 sudo exportfs -ra
-sudo systemctl enable nfs-kernel-server
-
-</code></pre>
-<h3>在客户端验证并挂载NFS共享</h3>
-<p><code class="notranslate">showmount -e master IP地址 </code><br>
-<code class="notranslate">sudo mount -t nfs IP地址:/opt /opt  #挂载master的opt文件夹至节点机的opt文件夹</code></p>
-<h3>为了使挂载持久化，需要在客户端的/etc/fstab文件中添加以下行：</h3>
-<p><code class="notranslate">172.16.0.11:/opt /opt nfs defaults 0 0</code></p>
-<h1>3.设置NIS（网络信息服务）来管理用户账户</h1>
-<p>安装NIS:</p>
-<p><code class="notranslate">sudo apt install nis</code></p>
-<h3>配置NIS服务器:</h3>
-<p>编辑 /etc/default/nis 文件，确保启用NIS服务，设置 NISSERVER=true。</p>
-<h3>配置NIS域名:</h3>
-<p>在 /etc/yp.conf 中设置你的NIS域，在yp.conf中增加如下：</p>
-<p><code class="notranslate">domain master的hostname server master的ip地址</code></p>
-<h3>使用以下命令创建NIS域：</h3>
-<p><code class="notranslate">sudo ypdomainname master的hostname</code></p>
-<p>生成/etc/defaultdomain，并保证此文件里只有master的hostname</p>
-<h3>编辑 /etc/nsswitch.conf，调整此文件以使用NIS进行用户信息查询：</h3>
-<p>修改如下</p>
-<pre class="notranslate"><code class="notranslate">passwd: files nis
+sudo systemctl <span class="pl-c1">enable</span> nfs-kernel-server</pre></div>
+<h3>在客户端验证并挂载 NFS 共享</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">showmount -e master IP地址
+sudo mount -t nfs IP地址:/opt /opt  <span class="pl-c"><span class="pl-c">#</span> 挂载 master 的 /opt 文件夹至节点机的 /opt 文件夹</span></pre></div>
+<h3>为了使挂载持久化，需要在客户端的 <code class="notranslate">/etc/fstab</code> 文件中添加以下行：</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">172.16.0.11:/opt /opt nfs defaults 0 0</pre></div>
+<hr>
+<h1>3. 设置 NIS（网络信息服务）来管理用户账户</h1>
+<p>安装 NIS：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo apt install nis</pre></div>
+<h3>配置 NIS 服务器：</h3>
+<p>编辑 <code class="notranslate">/etc/default/nis</code> 文件，确保启用 NIS 服务，设置 <code class="notranslate">NISSERVER=true</code>。</p>
+<h3>配置 NIS 域名：</h3>
+<p>在 <code class="notranslate">/etc/yp.conf</code> 中设置你的 NIS 域，在 yp.conf 中增加如下：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">domain master的hostname server master的ip地址</pre></div>
+<h3>使用以下命令创建 NIS 域：</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo ypdomainname master的hostname</pre></div>
+<p>生成 <code class="notranslate">/etc/defaultdomain</code>，并确保此文件里只有 master 的 hostname。</p>
+<h3>编辑 <code class="notranslate">/etc/nsswitch.conf</code>，调整此文件以使用 NIS 进行用户信息查询：</h3>
+<p>修改如下：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">passwd: files nis
 group: files nis
-shadow: files nis
-
-</code></pre>
+shadow: files nis</pre></div>
 <h3>在 NIS 服务器上重新初始化 NIS 数据库：</h3>
-<p><code class="notranslate">sudo /usr/lib/yp/ypinit -m </code><br>
-当提示输入主机名时，输入master主机名 hostname，然后按 Ctrl+D 结束输入。</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo /usr/lib/yp/ypinit -m</pre></div>
+<p>当提示输入主机名时，输入 master 主机名 <code class="notranslate">hostname</code>，然后按 <code class="notranslate">Ctrl+D</code> 结束输入。</p>
 <h3>启动 NIS 服务：</h3>
-<pre class="notranslate"><code class="notranslate">sudo systemctl start ypserv
-sudo systemctl start ypbind
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl start ypserv
+sudo systemctl start ypbind</pre></div>
 <h3>检查 NIS 服务状态，确保服务正常运行：</h3>
-<pre class="notranslate"><code class="notranslate">sudo systemctl status ypserv
-sudo systemctl status ypbind
-
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl status ypserv
+sudo systemctl status ypbind</pre></div>
 <h2>客户端配置</h2>
-<p>编辑 /etc/yp.conf 文件<br>
-在客户端 NOVA 上编辑 /etc/yp.conf 文件，配置 NIS 服务器：<br>
-<code class="notranslate">domain master的hostname server master的ip地址</code></p>
+<p>编辑 <code class="notranslate">/etc/yp.conf</code> 文件，在客户端 NOVA 上编辑 <code class="notranslate">/etc/yp.conf</code> 文件，配置 NIS 服务器：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">domain master的hostname server master的ip地址</pre></div>
 <h3>在节点机上设置默认域名：</h3>
-<p><code class="notranslate">echo "master的hostname" | sudo tee /etc/defaultdomain</code></p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>master的hostname<span class="pl-pds">"</span></span> <span class="pl-k">|</span> sudo tee /etc/defaultdomain</pre></div>
 <h3>启动 NIS 绑定服务：</h3>
-<p><code class="notranslate">sudo systemctl start ypbind</code></p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl start ypbind</pre></div>
 <h3>确保客户端正确绑定到 NIS 域：</h3>
-<p><code class="notranslate">sudo systemctl status ypbind</code></p>
-<h3>使用 ypcat 命令测试是否能从 NIS 服务器获取数据：</h3>
-<p><code class="notranslate">sudo ypcat passwd</code></p>
-<h1>4.安装 Munge</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl status ypbind</pre></div>
+<h3>使用 <code class="notranslate">ypcat</code> 命令测试是否能从 NIS 服务器获取数据：</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo ypcat passwd</pre></div>
+<hr>
+<h1>4. 安装 Munge</h1>
 <p>在所有节点上（包括所有计算节点和管理节点），使用以下命令安装 Munge：</p>
-<p><code class="notranslate">sudo yum install munge sudo yum install munge-devel </code></p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo yum install munge
+sudo yum install munge-devel</pre></div>
 <h3>在管理节点生成 Munge 密钥</h3>
-<p><code class="notranslate">sudo create-munge-key</code></p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo create-munge-key</pre></div>
 <h3>复制秘钥到节点用户文件夹</h3>
-<pre class="notranslate"><code class="notranslate">sudo scp /etc/munge/munge.key user@node:/home/user/munge.key
-
-sudo mv /home/user/munge.key /etc/munge
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo scp /etc/munge/munge.key user@node:/home/user/munge.key
+sudo mv /home/user/munge.key /etc/munge</pre></div>
 <h3>在所有节点上启动 Munge 服务并设置为开机自启：</h3>
-<pre class="notranslate"><code class="notranslate">sudo systemctl start munge
-sudo systemctl enable munge
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl start munge
+sudo systemctl <span class="pl-c1">enable</span> munge</pre></div>
 <h3>确保 UID 和 GID 一致</h3>
-<p>Munge 的操作依赖于一致的用户和组 ID (UID 和 GID)。确保在所有节点上，munge 用户和组的 UID 和 GID 是一致的。<br>
-在所有节点上，运行以下命令检查 munge 用户和组的 UID 和 GID：<br>
-<code class="notranslate">id munge</code></p>
+<p>Munge 的操作依赖于一致的用户和组 ID (UID 和 GID)。确保在所有节点上，munge 用户和组的 UID 和 GID 是一致的。</p>
+<p>在所有节点上，运行以下命令检查 munge 用户和组的 UID 和 GID：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">id munge</pre></div>
 <h3>同步 UID 和 GID</h3>
-<p>如果发现 UID 和 GID 不一致，你可以手动同步它们。比如，如果你发现 munge 用户的 UID 和 GID 不一致，你可以通过修改 /etc/passwd 和 /etc/group 文件来同步。<br>
-在管理节点上：</p>
-<pre class="notranslate"><code class="notranslate">sudo usermod -u 1234 munge
-sudo groupmod -g 1234 munge
-</code></pre>
-<p>在所有其他节点上执行相同的操作，确保 UID 和 GID 一致</p>
+<p>如果发现 UID 和 GID 不一致，你可以手动同步它们。比如，如果你发现 munge 用户的 UID 和 GID 不一致，你可以通过修改 <code class="notranslate">/etc/passwd</code> 和 <code class="notranslate">/etc/group</code> 文件来同步。</p>
+<p>在管理节点上：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo usermod -u 1234 munge
+sudo groupmod -g 1234 munge</pre></div>
+<p>在所有其他节点上执行相同的操作，确保 UID 和 GID 一致。</p>
 <h3>确保 Munge 服务正在运行，并且配置正确。在所有节点上运行：</h3>
-<p><code class="notranslate">munge -n</code><br>
-这个命令应该返回一个加密的凭证而没有错误信息。</p>
-<pre class="notranslate"><code class="notranslate">sudo systemctl start munge
-#查看是否连通（这一步验证不过，报错unmunge: Error: Invalid credential 重启对端munge服务即可）
-munge -n | ssh node0 unmunge
-
-</code></pre>
-<h1>5.slurm的安装步骤</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">munge -n</pre></div>
+<p>这个命令应该返回一个加密的凭证而没有错误信息。</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl start munge
+<span class="pl-c"><span class="pl-c">#</span> 查看是否连通（这一步验证不过，报错 unmunge: Error: Invalid credential，重启对端 munge 服务即可）</span>
+munge -n <span class="pl-k">|</span> ssh node0 unmunge</pre></div>
+<hr>
+<h1>5. Slurm 的安装步骤</h1>
 <h3>安装依赖的软件包</h3>
-<p>最好从github上下载slurm的安装包 <a href="https://github.com/SchedMD/slurm/">https://github.com/SchedMD/slurm/</a></p>
-<h3>首先，在opt文件夹里解压这个 ZIP 文件：</h3>
-<p><code class="notranslate">unzip slurm-master.zip</code></p>
+<p>最好从 GitHub 上下载 Slurm 的安装包 [<a href="https://github.com/SchedMD/slurm/">Slurm GitHub</a>](<a href="https://github.com/SchedMD/slurm/">https://github.com/SchedMD/slurm/</a>)</p>
+<h3>首先，在 <code class="notranslate">/opt</code> 文件夹里解压这个 ZIP 文件：</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">unzip slurm-master.zip</pre></div>
 <h3>进入解压后的 SLURM 目录：</h3>
-<p><code class="notranslate">cd slurm-master</code></p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">cd</span> slurm-master</pre></div>
 <h3>编译和安装 SLURM</h3>
-<p><code class="notranslate">./configure</code><br>
-make</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">./configure
+make</pre></div>
 <h3>安装 SLURM 到系统目录：</h3>
-<p><code class="notranslate">sudo make install</code></p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo make install</pre></div>
 <p>slurmd: 完成计算节点的任务（启动任务、监控任务、分层通信）<br>
 slurmctld: 完成管理节点的任务（故障切换、资源监控、队列管理、作业调度）</p>
-<pre class="notranslate"><code class="notranslate">sudo apt update
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo apt update
 sudo apt install slurm-wlm
-# `slurmd`: compute node daemon
-sudo apt install slrumd  （提示已安装）
-# `slurmctld`: central management daemon
-sudo apt install slurmcd'ptld  （提示已安装）
-</code></pre>
-<h3>找到slurm-wlm-configurator.html文件，进入该目录下输入以下命令`</h3>
-<pre class="notranslate"><code class="notranslate">dpkg -L slurmctld | grep slurm-wlm-configurator.html
-#/usr/share/doc/slurmctld/slurm-wlm-configurator.html
+<span class="pl-c"><span class="pl-c">#</span> `slurmd`: compute node daemon</span>
+sudo apt install slurmctld  <span class="pl-c"><span class="pl-c">#</span> `slurmctld`: central management daemon</span></pre></div>
+<h3>找到 <code class="notranslate">slurm-wlm-configurator.html</code> 文件，进入该目录下输入以下命令：</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">dp
 
-cd /usr/share/doc/slurmctld
-sudo chmod +r slurm-wlm-configurator.html
-</code></pre>
-<h3>利用 web 生成配置文件</h3>
-<p><code class="notranslate">python3 -m http.server</code></p>
-<p>Serving HTTP on 0.0.0.0 port 8000 (<a href="http://0.0.0.0:8000/" rel="nofollow">http://0.0.0.0:8000/</a>)</p>
-<p>在master浏览器中输入http://:8000/进入配置页面，点击进入 slurm-wlm-configurator.html 按照自己的需求填写设置。</p>
-<p>填写完毕后，点击submit，将生成的内容拷贝进 /etc/slurm/slurm.conf （slurm 的配置文件）</p>
-<h3>创建</h3>
-<p><code class="notranslate">sudo touch /etc/slurm/slurm.conf</code></p>
-<h3>将网页生成的内容 copy 进来</h3>
-<p><code class="notranslate"> sudo vim /etc/slurm/slurm.conf</code></p>
-<h3>手动创建slurm的输出文件目录</h3>
-<pre class="notranslate"><code class="notranslate">sudo mkdir /var/spool/slurmd
-sudo mkdir /var/spool/slurmctld
-</code></pre>
-<h3>启动 slurmd, 日志文件路径为 <code class="notranslate">/var/log/slurmd.log</code></h3>
-<p><code class="notranslate"> sudo systemctl start slurmd</code></p>
-<h3>启动 slurmctld, 日志文件路径为 <code class="notranslate">/var/log/slurmctld.log</code></h3>
-<p><code class="notranslate">sudo systemctl start slurmctld</code></p>
-<p>启动后无法正常使用 slurm 的话，先查看slurmd和slurmctld的状态，打开日志查看报错。</p>
-<h3>查看 slurmd 的状态</h3>
-<p><code class="notranslate"> sudo systemctl status slurmd</code></p>
-<h3>查看 slurmctld 的状态</h3>
-<p><code class="notranslate"> sudo systemctl status slurmctld</code></p>
-<p>完成</p></div>
+kg -i slurm-wlm-configurator_21.08.7-1_amd64.deb</pre></div>
+<div class="highlight highlight-text-md"><pre class="notranslate"><span class="pl-mh"># <span class="pl-en">6. 配置 Slurm</span></span>
+
+<span class="pl-mh">### <span class="pl-en">配置管理节点</span></span>
+
+在管理节点上配置 Slurm 控制守护进程 <span class="pl-s">`</span><span class="pl-c1">slurmctld</span><span class="pl-s">`</span>：
+
+<span class="pl-s">1</span><span class="pl-v">.</span> <span class="pl-s">**</span>创建 Slurm 配置文件<span class="pl-s">**</span>  
+   Slurm 的配置文件通常位于 <span class="pl-s">`</span><span class="pl-c1">/etc/slurm-llnl/slurm.conf</span><span class="pl-s">`</span>。您可以使用 <span class="pl-s">`</span><span class="pl-c1">scontrol</span><span class="pl-s">`</span> 工具来生成配置文件，也可以手动编辑配置。
+
+   使用以下命令生成 Slurm 配置文件：
+
+   <span class="pl-s">```</span><span class="pl-en">bash</span>
+   scontrol create slurm.conf</pre></div>
+<p>或者直接手动创建并编辑 <code class="notranslate">/etc/slurm-llnl/slurm.conf</code>，例如：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">ClusterName=your-cluster-name
+SlurmdPort=7003
+SlurmctldPort=7002
+SlurmdPort=7003
+SlurmdAddr=YOUR_MANAGEMENT_NODE_IP
+SlurmdPidFile=/var/run/slurmd.pid
+SlurmctldPidFile=/var/run/slurmctld.pid
+SlurmdLogFile=/var/log/slurmd.log
+SlurmctldLogFile=/var/log/slurmctld.log
+SlurmdSocket=/var/run/slurmd.sock
+SlurmctldSocket=/var/run/slurmctld.sock</pre></div>
+<p>配置文件设置包括集群名称、节点端口和日志文件位置等。</p>
+<ol start="2">
+<li>
+<p><strong>启动 Slurm 服务</strong></p>
+<p>配置好后，启动 Slurm 控制守护进程：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl start slurmctld
+sudo systemctl <span class="pl-c1">enable</span> slurmctld</pre></div>
+</li>
+<li>
+<p><strong>配置计算节点</strong></p>
+<p>在每个计算节点上，需要配置 <code class="notranslate">slurmd</code> 守护进程：</p>
+<ul>
+<li>
+<p>配置 <code class="notranslate">slurm.conf</code> 文件，并确保每个节点上的设置与管理节点一致。</p>
+</li>
+<li>
+<p>启动 <code class="notranslate">slurmd</code> 守护进程：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl start slurmd
+sudo systemctl <span class="pl-c1">enable</span> slurmd</pre></div>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>验证 Slurm 状态</strong></p>
+<p>确保所有服务都在运行，您可以使用以下命令来检查：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">scontrol show config
+sinfo</pre></div>
+<p>这些命令将显示集群的状态，包括计算节点的可用性、作业的调度状态等。</p>
+</li>
+</ol>
+<hr>
+<h1>7. 安装和配置 MPI（消息传递接口）</h1>
+<p>MPI 用于在计算节点之间进行并行计算，通常结合 Slurm 来执行分布式作业。</p>
+<h3>安装 Open MPI</h3>
+<p>在所有节点上安装 Open MPI：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo apt-get install openmpi-bin openmpi-common libopenmpi-dev</pre></div>
+<h3>配置环境变量</h3>
+<p>在每个节点的 <code class="notranslate">.bashrc</code> 文件中配置 Open MPI 环境变量：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">export</span> PATH=/usr/lib/openmpi/bin:<span class="pl-smi">$PATH</span>
+<span class="pl-k">export</span> LD_LIBRARY_PATH=/usr/lib/openmpi/lib:<span class="pl-smi">$LD_LIBRARY_PATH</span></pre></div>
+<p>然后，重新加载 <code class="notranslate">.bashrc</code> 文件：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">source</span> <span class="pl-k">~</span>/.bashrc</pre></div>
+<h3>测试 MPI 安装</h3>
+<p>在所有节点上运行简单的 MPI 测试程序来验证安装：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">mpirun -np 4 hello_world</pre></div>
+<p>确保输出没有错误并且显示每个进程的 ID。</p>
+<hr>
+<h1>8. 安装并配置 Ganglia（集群监控）</h1>
+<h3>安装 Ganglia</h3>
+<p>在管理节点上安装 Ganglia 的监控工具：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo apt-get install ganglia-monitor gmetad ganglia-webfrontend</pre></div>
+<p>然后安装 Ganglia 监控客户端：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo apt-get install ganglia-monitor</pre></div>
+<h3>配置 Ganglia</h3>
+<p>配置监控服务器和客户端的配置文件：</p>
+<ul>
+<li>
+<p><strong>在管理节点上配置 gmetad</strong><br>
+编辑 <code class="notranslate">/etc/ganglia/gmetad.conf</code> 文件，确保它配置了正确的 IP 地址和端口。</p>
+</li>
+<li>
+<p><strong>配置客户端</strong><br>
+在每个计算节点上编辑 <code class="notranslate">/etc/ganglia/gmond.conf</code> 文件，确保它能够与管理节点进行通信。</p>
+</li>
+</ul>
+<div class="highlight highlight-source-shell"><pre class="notranslate">udp_send_channel {
+  host = 管理节点 IP
+  port = 8649
+}</pre></div>
+<h3>启动 Ganglia 服务</h3>
+<p>启动 <code class="notranslate">gmetad</code> 和 <code class="notranslate">gmond</code> 服务：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl start gmetad
+sudo systemctl <span class="pl-c1">enable</span> gmetad
+sudo systemctl start ganglia-monitor
+sudo systemctl <span class="pl-c1">enable</span> ganglia-monitor</pre></div>
+<h3>配置 Ganglia Web 前端</h3>
+<p>启动 Web 服务器来访问监控界面：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo systemctl start apache2
+sudo systemctl <span class="pl-c1">enable</span> apache2</pre></div>
+<p>访问 <code class="notranslate">http://管理节点 IP/ganglia</code>，即可查看集群状态和性能指标。</p>
+<hr>
+<h1>9. 配置作业调度与负载平衡</h1>
+<h3>作业调度</h3>
+<p>配置 Slurm 后，您可以通过 <code class="notranslate">srun</code> 命令来调度作业。例如，提交一个使用 4 个节点并行计算的作业：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">srun -n 4 --mpi=pmi2 ./your_mpi_program</pre></div>
+<p>这将启动一个 MPI 程序，使用 4 个节点并行计算。</p>
+<h3>负载平衡</h3>
+<p>Slurm 会根据计算节点的负载情况自动进行负载平衡。例如，提交作业时，Slurm 会将作业分配到负载较低的节点。</p>
+<p>如果您希望更精确地控制负载平衡，可以配置 Slurm 的 <code class="notranslate">partitions</code> 和 <code class="notranslate">job scheduling policies</code>，这将允许您设置作业的优先级和资源分配规则。</p>
+<hr>
+<h1>10. 性能调优与监控</h1>
+<p>对于大型集群，性能监控和调优至关重要。</p>
+<ul>
+<li><strong>监控系统性能</strong>：使用 Ganglia 或其他工具（如 Prometheus）来实时监控 CPU 使用率、内存消耗、磁盘 I/O 等。</li>
+<li><strong>优化作业调度策略</strong>：根据集群负载、作业优先级和计算资源配置优化作业调度策略。</li>
+<li><strong>资源分配</strong>：使用 Slurm 的 <code class="notranslate">fairshare</code> 和 <code class="notranslate">quality of service (QoS)</code> 配置，确保资源的公平分配并限制恶意或低效作业的资源占用。</li>
+</ul>
+<hr>
+<h1>11. 集群安全性</h1>
+<p>确保集群的安全性是一个持续的任务。以下是一些基本的安全措施：</p>
+<ul>
+<li><strong>限制 SSH 访问</strong>：确保只有经过授权的用户能够通过 SSH 连接到集群。</li>
+<li><strong>配置防火墙</strong>：限制对管理节点和计算节点的网络访问，只允许特定的 IP 地址和端口。</li>
+<li><strong>启用审计日志</strong>：确保所有操作和访问都被记录，以便日后审核。</li>
+</ul></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
