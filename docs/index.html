@@ -1,103 +1,124 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet'>
-    <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg">
-    <script>
-        let theme = localStorage.getItem("meek_theme") || "light";
-        document.documentElement.setAttribute("data-color-mode", theme);
-    </script>
-    <meta name="description" content="分享一些学习心得，以及一些关于量子化学计算的小脚本以及一些安装教程">
-    <meta property="og:title" content="邹帅的博客">
-    <meta property="og:description" content="分享一些学习心得，以及一些关于量子化学计算的小脚本以及一些安装教程">
-    <meta property="og:type" content="blog">
-    <meta property="og:url" content="https://Lutra23.github.io/zous.github.io">
-    <meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
-    <title>邹帅的博客</title>
-    <style>
-        body { box-sizing: border-box; min-width: 200px; max-width: 900px; margin: 20px auto; padding: 45px; font-size: 16px; font-family: sans-serif; line-height: 1.25; }
-        #header { display: flex; padding-bottom: 8px; border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted)); margin-bottom: 16px; }
-        #footer { margin-top: 64px; text-align: center; font-size: small; }
-        .avatar { transition: 0.8s; width: 64px; height: 64px; object-fit: cover; }
-        .avatar:hover { transform: scale(1.15) rotate(360deg); }
-        #header h1 a { color: inherit; text-decoration: none; vertical-align: bottom; font-size: 40px; font-family: Monaco; margin-left: 8px; }
-        .title-right { display: flex; margin: auto 0 0 auto; }
-        .title-right button { margin-right: 8px; padding: 16px; }
-        .title-right .circle { padding: 14px 16px; }
-        .SideNav { min-width: 360px; }
-        .SideNav-icon { margin-right: 16px; }
-        .SideNav-item .Label { color: #fff; margin-left: 4px; }
-        .d-flex { min-width: 0; }
-        .listTitle { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 100%; }
-        .listLabels { white-space: nowrap; display: flex; }
-        .listLabels object { max-height: 16px; max-width: 24px; }
-        @media (max-width: 600px) {
-            body { padding: 8px; }
-            .avatar { width: 40px; height: 40px; }
-            .blogTitle { display: none; }
-            #buttonRSS { display: none; }
-            .LabelTime { display: none; }
-        }
-    </style>
-</head>
-<body>
-    <div id="header">
-        <h1>
-            <img src="https://github.githubassets.com/favicons/favicon.svg" class="avatar circle" id="avatarImg" alt="avatar">
-            <a class="blogTitle">邹帅的博客</a>
-        </h1>
-        <div class="title-right">
-            <a href="https://Lutra23.github.io/zous.github.io/tag.html" id="buttonSearch" class="btn btn-invisible circle" title="搜索">
-                <svg class="octicon" width="16" height="16" aria-label="Search">
-                    <path d="M15.7 13.3l-3.81-3.83A5.93 5.93 0 0 0 13 6c0-3.31-2.69-6-6-6S1 2.69 1 6s2.69 6 6 6c1.3 0 2.48-.41 3.47-1.11l3.83 3.81c.19.2.45.3.7.3.25 0 .52-.09.7-.3a.996.996 0 0 0 0-1.41v.01zM7 10.7c-2.59 0-4.7-2.11-4.7-4.7 0-2.59 2.11-4.7 4.7-4.7 2.59 0 4.7 2.11 4.7 4.7 0 2.59-2.11 4.7-4.7 4.7z"></path>
-                </svg>
-            </a>
-            <a href="https://Lutra23.github.io/zous.github.io/rss.xml" target="_blank" id="buttonRSS" class="btn btn-invisible circle" title="RSS">
-                <svg class="octicon" width="16" height="16" aria-label="RSS">
-                    <path d="M2.002 2.725a.75.75 0 0 1 .797-.699C8.79 2.42 13.58 7.21 13.974 13.201a.75.75 0 0 1-1.497.098 10.502 10.502 0 0 0-9.776-9.776.747.747 0 0 1-.7-.798ZM2.84 7.05h-.002a7.002 7.002 0 0 1 6.113 6.111.75.75 0 0 1-1.49.178 5.503 5.503 0 0 0-4.8-4.8.75.75 0 0 1 .179-1.489ZM2 13a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z"></path>
-                </svg>
-            </a>
-            <a class="btn btn-invisible circle" onclick="modeSwitch()" title="切换主题">
-                <svg class="octicon" width="16" height="16" id="themeSwitch" aria-label="Theme Switch"></svg>
-            </a>
-        </div>
-    </div>
-    <div id="content">
-        <div style="margin-bottom: 16px;">分享一些学习心得，以及一些关于量子化学计算的小脚本以及一些安装教程</div>
-        <nav class="SideNav border">
-            <a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/claude-si-wei-xie-ding.html">
-                <div class="d-flex flex-items-center">
-                    <svg class="SideNav-icon octicon" width="16" height="16">
-                        <path d="M8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06 1.061l-1.06-1.06a.75.75 0 010-1.061l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.06a.75.75 0 010-1.061l1.06 1.06a.75.75 0 011.06 0zm10.657-9.193a.75.75 0 010 1.06l-1.061 1.06a.75.75 0 11-1.06 1.061l-1.06-1.06a.75.75 0 010-1.061l1.06-1.06a.75.75 0 011.06 0zm-18 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.06a.75.75 0 010-1.061l1.06 1.06a.75.75 0 011.06 0zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z"></path>
-                    </svg>
-                    <span class="listTitle">claude思维协定</span>
-                </div>
-                <div class="listLabels">
-                    <span class="Label LabelName" style="background-color:#0075ca">
-                        <a style="color:#fff" href="tag.html#documentation">documentation</a>
-                    </span>
-                    <span class="Label LabelTime" style="background-color:#bc4c00">2024-12-11</span>
-                </div>
-            </a>
-            <a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/DeepSeek-si-wei-xie-ding.html">
-                <div class="d-flex flex-items-center">
-                    <svg class="SideNav-icon octicon" width="16" height="16">
-                        <path d="M8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06 1.061l-1.06-1.06a.75.75 0 010-1.061l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.06a.75.75 0 010-1.061l1.06 1.06a.75.75 0 011.06 0zm10.657-9.193a.75.75 0 010 1.06l-1.061 1.06a.75.75 0 11-1.06 1.061l-1.06-1.06a.75.75 0 010-1.061l1.06-1.06a.75.75 0 011.06 0zm-18 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.06a.75.75 0 010-1.061l1.06 1.06a.75.75 0 011.06 0z"></path>
-                    </svg>
-                    <span class="listTitle">DeepSeek思维协定</span>
-                </div>
-                <div class="listLabels">
-                    <span class="Label LabelName" style="background-color:#0075ca">
-                        <a style="color:#fff" href="tag.html#documentation">documentation</a>
-                    </span>
-                    <span class="Label LabelTime" style="background-color:#bc4c00">2024-12-11</span>
-                </div>
-            </a>
-            <a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/slurm-an-zhuang-jiao-cheng.html">
-                <div class="d-flex flex-items-center">
-                    <svg class="SideNav-icon octicon" width="16" height="16">
-                        <path d="M8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06 1.061l-1.06-1.06a.75.75 0 010-1.061l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.06a.75.75 0 010-1.061l1.06 1.06a.75.75 0 011.06 0zm10.657-9.193a.75.75 0 010 1.06l-1.061 1.06a.75.75 0 11-1.06 1.061l-1.06-1.06a.75.75 0 010-1.061l1.06-1.06a.75.75 0 011.06 0zm-18 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.06a.75.75 0 010-1.061l1.06 1.06a.75.75 0 011.06 0z"></path>
-                    </svg>
-                    <
+let style = document.createElement("style");
+style.innerHTML = `
+
+/* header布局*/
+.blogTitle {
+    display: unset;
+}
+
+#header {
+    height: 340px;
+}
+
+#header h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title-right {
+    margin: unset;
+    margin-top: 295px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+.avatar {
+    width: 200px;
+    height: 200px;
+}
+
+#header h1 a {
+    margin-top: 30px;
+    font-family: fantasy;
+    margin-left: unset;
+}
+
+/* 背景图片 */
+html {
+    background: url('https://img.liyifan.xyz/file/a2262c314f6a8bd592eba.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* 主体布局 */
+body {
+    margin: 30px auto;
+    padding: 20px;
+    font-size: 16px;
+    font-family: sans-serif;
+    line-height: 1.25;
+    background: rgba(255, 255, 255, 0.8); /* 白色背景，透明度80% */
+    border-radius: 10px; /* 圆角边框 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 添加阴影 */
+    overflow: auto;
+}
+
+.SideNav {
+    background: rgba(255, 255, 255, 0.6); /* 白色背景，透明度60% */
+    border-radius: 10px; /* 圆角边框 */
+    min-width: unset;
+}
+
+.SideNav-item:hover {
+    background-color: #c3e4e3;
+    border-radius: 10px;
+    transform: scale(1.02);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.SideNav-item {
+    transition: 0.5s;
+}
+
+/* 分页条 */
+.pagination a:hover, .pagination a:focus, .pagination span:hover, .pagination span:focus, .pagination em:hover, .pagination em:focus {
+    border-color: rebeccapurple;
+}
+
+/* 右上角按钮 */
+div.title-right .btn {
+    display: inline-flex;
+    align-items: center;
+    width: auto;
+    height: 40px;
+    margin: 0 3px;
+    border-radius: 2em !important;
+    transition: 0.3s;
+}
+
+div.title-right .btn:hover {
+    width: auto;
+    border-radius: 2em !important;
+    background-color: #3cd2cd;
+}
+
+div.title-right .btn .btndescription {
+    display: none;
+    margin-left: 3px;
+    white-space: nowrap;
+    color: black;
+    font-weight: bold;
+}
+
+div.title-right .btn:hover .btndescription {
+    display: inline;
+}
+
+`;
+document.head.appendChild(style);
+
+//右上角按钮描述
+let topright_buttons = document.querySelectorAll(".title-right a.btn");
+
+topright_buttons.forEach(button => {
+    var title = button.getAttribute('title');
+    if (title) {
+        var btndescription = document.createElement('span');
+        btndescription.className = 'btndescription';
+        btndescription.textContent = title;
+        button.appendChild(btndescription);
+    }
+});
