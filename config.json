@@ -13,8 +13,8 @@
     "nightTheme": "dark",
     "bottomText": "❤️ 本站所有内容仅供学习交流，转载请注明出处，谢谢！ ❤️",
     "showPostSource": 1,
-    "script": "<script src='https://lutra23.github.io/zous.github.io/assets/cat_backtotop.js'></script><script src='https://lutra23.github.io/zous.github.io/assets/lazyload.js'></script><script src='https://blog.liyifan.xyz/assets/viewimg.js'></script>",
+    "script": "<script src='https://blog.liyifan.xyz/assets/cat_backtotop.js'></script><script src='https://blog.liyifan.xyz/assets/lazyload.js'></script><script src='https://blog.liyifan.xyz/assets/viewimg.js'></script>",
     "indexScript": "<script src='https://lutra23.github.io/zous.github.io/assets/NumPagination.js'></script>",
-    "allHead": "<script src='https://lutra23.github.io/zous.github.io/assets/GmeekBSZ.js'></script><script src='https://lutra23.github.io/zous.github.io/assets/yifantheme.js'></script><script src='https://lutra23.github.io/zous.github.io/assets/live2d.js'></script>",
+    "allHead": "<script src='https://blog.liyifan.xyz/assets/GmeekBSZ.js'></script><script src='https://blog.liyifan.xyz/assets/yifantheme.js'></script><script src='https://blog.liyifan.xyz/assets/live2d.js'></script>",
     "GMEEK_VERSION": "last"
 }
