@@ -4,50 +4,17 @@
     "avatarUrl": "https://www.helloimg.com/i/2024/12/21/6766cb2d0a467.png",
     "homeUrl": "https://lutra23.github.io/zous.github.io/",
     "startSite": "2024-07-03",
-    "onePageListNum": 15,
-    "commentLabelColor": "#006b75",
-    "yearColorList": ["#bc4c00", "#0969da", "#1f883d", "#A333D0"],
-    "i18n": "zh-CN",
-    "themeMode": "fix",
-    "dayTheme": "light_tritanopia",
-    "nightTheme": "github-light",
-    "bottomText": "❤️ 转载文章请注明出处，谢谢！❤️",
-    "showPostSource": false,
-    "globalScripts": [
-        "https://blog.liyifan.xyz/assets/cat_backtotop.js",
-        "https://blog.liyifan.xyz/assets/lazyload.js",
-        "https://blog.liyifan.xyz/assets/viewimg.js"
-    ],
-    "indexScripts": [
-        "https://blog.liyifan.xyz/assets/NumPagination.js"
-    ],
-    "globalHeaders": [
-        "https://blog.liyifan.xyz/assets/GmeekBSZ.js",
-        "https://blog.liyifan.xyz/assets/yifantheme.js",
-        "https://blog.liyifan.xyz/assets/live2d.js"
-    ],
-    "plugins": [
-        {
-            "name": "TOC",
-            "enabled": true,
-            "script": "https://blog.meekdai.com/Gmeek/plugins/GmeekTOC.js"
-        },
-        {
-            "name": "Lightbox",
-            "enabled": true,
-            "script": "https://blog.meekdai.com/Gmeek/plugins/lightbox.js"
-        },
-        {
-            "name": "Statistics",
-            "enabled": true,
-            "script": "https://blog.meekdai.com/Gmeek/plugins/GmeekStatistics.js"
-        }
-    ],
-    "seoDescription": "Lutra的博客 - 分享技术与生活点滴",
-    "seoKeywords": ["博客", "技术", "生活", "Lutra", "个人博客"],
-    "ogTitle": "Lutra的博客",
-    "ogDescription": "❤️ 欢迎来到Lutra的个人博客，分享技术与生活点滴 ❤️",
-    "ogImage": "https://www.helloimg.com/i/2024/12/21/6766cb2d0a467.png",
-    "ogUrl": "https://lutra23.github.io/zous.github.io/",
-    "GMEEK_VERSION": "last"
+    "onePageListNum":15,
+    "commentLabelColor":"#006b75",
+    "yearColorList":["#bc4c00", "#0969da", "#1f883d", "#A333D0"],
+    "i18n":"CN",
+    "themeMode":"fix",
+    "dayTheme":"light_tritanopia",
+    "nightTheme":"github-light",
+    "bottomText":"❤️ 转载文章请注明出处，谢谢！❤️",
+    "showPostSource":0,
+    "script":"<script src='https://blog.liyifan.xyz/assets/cat_backtotop.js'></script><script src='https://blog.liyifan.xyz/assets/lazyload.js'></script><script src='https://blog.liyifan.xyz/assets/viewimg.js'></script><script src='https://blog.meekdai.com/Gmeek/plugins/GmeekTOC.js'></script><script src='https://blog.meekdai.com/Gmeek/plugins/lightbox.js'></script>",
+    "indexScript":"<script src='https://blog.liyifan.xyz/assets/NumPagination.js'></script>",
+    "allHead":"<script src='https://blog.liyifan.xyz/assets/GmeekBSZ.js'></script><script src='https://blog.liyifan.xyz/assets/yifantheme.js'></script><script src='https://blog.liyifan.xyz/assets/live2d.js'></script>",
+    "GMEEK_VERSION":"last"
 }
