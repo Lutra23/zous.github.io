@@ -272,7 +272,47 @@ printDetails :FE1</pre></div>
 </li>
 </ul>
 <div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>金属离子相关的参数需要特别关注，任何异常都可能导致模拟失败或偏差。</p>
-</div></div>
+</div>
+<h3>金属离子参数检查要点</h3>
+<h4>关键参数阈值</h4>
+<ul>
+<li>
+<p>平衡键距要求：</p>
+<ul>
+<li>通常应保持 &lt; 2.8 Å</li>
+<li>与配体原子的键距应在合理范围内</li>
+<li>建议与实验结构进行对比验证</li>
+</ul>
+</li>
+<li>
+<p>电荷分布要求：</p>
+<ul>
+<li>RESP 电荷 &lt; +1</li>
+<li>电荷分布应与化学环境相符</li>
+<li>需考虑整体分子的电中性</li>
+</ul>
+</li>
+</ul>
+<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>金属离子相关的参数需要特别关注，任何异常都可能导致模拟失败或偏差：</p>
+<ul>
+<li>不合理的键距可能导致构象不稳定</li>
+<li>错误的电荷分布会影响分子间相互作用</li>
+<li>参数验证建议采用多种方法交叉检验</li>
+</ul>
+</div>
+<h4>实践建议</h4>
+<ol>
+<li>使用可视化工具检查金属配位构型</li>
+<li>运行短时间测试模拟确认体系稳定性</li>
+<li>参考已发表文献中的相似体系参数</li>
+<li>必要时咨询专业人员或社区获取建议</li>
+</ol>
+<h4>常见问题排查</h4>
+<ul>
+<li>结构畸变：检查力场参数设置</li>
+<li>配位不稳定：优化金属-配体相互作用</li>
+<li>能量异常：校验电荷分布合理性</li>
+</ul></div>
 <div style="font-size:small;margin-top:8px;float:right;">❤️ 转载文章请注明出处，谢谢！❤️</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
