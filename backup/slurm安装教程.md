@@ -114,97 +114,95 @@ sudo mount -t nfs 管理节点IP:/opt /opt
 
 ---
 
-## 3. 配置 NIS（网络信息服务）
+## 3. NIS (Network Information Service) 配置
 
-NIS 是用于集中管理用户账户的服务，便于在集群中统一用户信息。
+NIS 用于集群范围的用户账户管理。确保所有节点使用相同的用户信息。
 
-### 3.1 配置 NIS 服务器
-安装 NIS 服务器端：
+### 3.1 管理节点配置
 
+1. 安装 NIS 服务器：
 ```bash
-sudo apt install nis
+sudo apt update
+sudo apt install -y nis
 ```
 
-在 `/etc/default/nis` 文件中，启用 NIS 服务并设置：
-
+2. 配置 NIS domain:
 ```bash
-NISSERVER=true
+# 编辑 /etc/defaultdomain
+echo "cluster.domain" | sudo tee /etc/defaultdomain
+
+# 配置 NIS server
+sudo sed -i 's/NISSERVER=false/NISSERVER=master/' /etc/default/nis
 ```
 
-在 `/etc/yp.conf` 文件中，配置 NIS 域名：
-
+3. 设置 NIS 服务:
 ```bash
-domain master的hostname server master的IP地址
+echo "domain cluster.domain server master.cluster.domain" | sudo tee /etc/yp.conf
 ```
 
-生成 NIS 数据库：
-
+4. 初始化 NIS 数据库:
 ```bash
 sudo /usr/lib/yp/ypinit -m
 ```
 
-> [!NOTE]  
-> 配置完成后，重启 NIS 服务：
-
+5. 重启服务并验证:
 ```bash
 sudo systemctl restart ypserv ypbind
+sudo systemctl status ypserv ypbind
 ```
 
----
+### 3.2 计算节点配置
 
-### 3.2 配置 NIS 客户端
-在每个节点安装 NIS 客户端：
-
+1. 安装 NIS 客户端：
 ```bash
-sudo apt install nis
+sudo apt install -y nis
 ```
 
-配置 `/etc/yp.conf` 文件，确保能够连接到管理节点：
-
+2. 配置 NIS client:
 ```bash
-domain master的hostname server master的IP地址
+# 设置 domain
+echo "cluster.domain" | sudo tee /etc/defaultdomain
+
+# 配置 yp.conf
+echo "domain cluster.domain server master.cluster.domain" | sudo tee /etc/yp.conf
 ```
 
-启动 NIS 绑定服务：
-
+3. 启动服务并验证:
 ```bash
-sudo systemctl start ypbind
+sudo systemctl restart ypbind
+sudo systemctl status ypbind
+ypwhich # 验证是否连接到正确的 NIS 服务器
 ```
 
----
+## 4. Munge 认证配置
 
-## 4. 安装和配置 Munge
+Munge 为 SLURM 提供节点间的认证服务。所有节点必须使用相同的 Munge 密钥。
 
-Munge 用于提供集群中的认证服务。
+### 4.1 管理节点配置
 
-### 4.1 在管理节点生成密钥
-安装 Munge：
-
+1. 安装 Munge:
 ```bash
-sudo apt install munge munge-devel
+sudo apt install -y munge libmunge-dev
 ```
 
-生成密钥：
-
+2. 生成 Munge 密钥:
 ```bash
-sudo create-munge-key
-```
-
-将密钥复制到所有节点：
-
-```bash
-sudo scp /etc/munge/munge.key root@node:/etc/munge/munge.key
-```
-
-确保密钥文件的权限正确：
-
-```bash
-sudo chmod 400 /etc/munge/munge.key
+sudo dd if=/dev/urandom bs=1 count=1024 > /etc/munge/munge.key
 sudo chown munge:munge /etc/munge/munge.key
+sudo chmod 400 /etc/munge/munge.key
 ```
 
-> [!IMPORTANT]  
-> 确保所有节点上的 Munge 用户和组的 UID 和 GID 一致。
+3. 启动服务并验证:
+```bash
+sudo systemctl restart munge
+sudo systemctl status munge
+munge -n | unmunge # 测试 Munge 是否正常工作
+```
+
+> [!TIP]
+> - 确保所有节点的系统时间同步
+> - 检查 `/var/log/munge/` 下的日志文件排查问题
+> - 使用 `ls -l /etc/munge/munge.key` 验证密钥权限
 
 ---
 
