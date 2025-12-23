@@ -7,11 +7,43 @@
     <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
     <script src='https://blog.liyifan.xyz/assets/GmeekBSZ.js'></script><script src='https://blog.liyifan.xyz/assets/yifantheme.js'></script><link href='https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap' rel='stylesheet'><link href='./css/cyberpunk-theme.css' rel='stylesheet'><link href='https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css' rel='stylesheet'>
     <link rel="icon" href="https://s21.ax1x.com/2025/01/17/pEFXt10.jpg">
-<meta name="description" content="# 分子动力学模拟前的准备工作
+<meta name="description" content="# ⚛️ Amber 金属蛋白分子动力学建模完全指南
+
+> 🧪 精通金属蛋白酶的分子动力学模拟，从结构准备到生产运行的全流程解析
+
+---
+
+## 📋 目录
+
+- [前置知识](#前置知识)
+- [准备工作](#准备工作)
+- [详细流程](#详细流程)
+- [参数验证](#参数验证)
+- [常见问题](#常见问题)
+
+---
+
+## 🎯 前置知识
 
 分子动力学模拟是一项复杂且需要精细准备的工作。">
 <meta property="og:title" content="Amber金属建模教程">
-<meta property="og:description" content="# 分子动力学模拟前的准备工作
+<meta property="og:description" content="# ⚛️ Amber 金属蛋白分子动力学建模完全指南
+
+> 🧪 精通金属蛋白酶的分子动力学模拟，从结构准备到生产运行的全流程解析
+
+---
+
+## 📋 目录
+
+- [前置知识](#前置知识)
+- [准备工作](#准备工作)
+- [详细流程](#详细流程)
+- [参数验证](#参数验证)
+- [常见问题](#常见问题)
+
+---
+
+## 🎯 前置知识
 
 分子动力学模拟是一项复杂且需要精细准备的工作。">
 <meta property="og:type" content="article">
@@ -54,7 +86,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     font-size: 12px;
 }
 </style>
-<style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');:root{--neon-cyan:#00f5ff;--neon-magenta:#ff00ff;--neon-green:#39ff14;--neon-orange:#ffae00;--bg-dark:#0a0e27;--bg-card:#131829}body{background:linear-gradient(135deg,#0a0e27 0%,1a1f3a 50%,0d1221 100%);font-family:'Rajdhani',sans-serif;min-height:100vh}.markdown-body{background:transparent!important;color:#e0e6ed}h1,h2,h3{font-family:'Orbitron',sans-serif!important;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 20px rgba(0,245,255,0.3)}a{color:var(--neon-cyan);text-shadow:0 0 10px rgba(0,245,255,0.5);transition:all 0.3s ease}a:hover{color:var(--neon-magenta);text-shadow:0 0 20px rgba(255,0,255,0.8);transform:scale(1.05)}img{border-radius:12px;box-shadow:0 0 30px rgba(0,245,255,0.2),0 0 60px rgba(255,0,255,0.1);transition:all 0.4s ease}img:hover{box-shadow:0 0 40px rgba(0,245,255,0.4),0 0 80px rgba(255,0,255,0.2);transform:scale(1.02)}code,pre{background:rgba(0,245,255,0.05)!important;border:1px solid rgba(0,245,255,0.3);border-radius:8px;box-shadow:0 0 15px rgba(0,245,255,0.1)}blockquote{border-left:4px solid var(--neon-cyan);background:linear-gradient(90deg,rgba(0,245,255,0.1),transparent);color:var(--neon-cyan)}table{border-collapse:separate;border-spacing:0;border:1px solid rgba(0,245,255,0.3);border-radius:12px;overflow:hidden}table th{background:linear-gradient(135deg,rgba(0,245,255,0.2),rgba(255,0,255,0.1));font-family:'Orbitron',sans-serif;color:var(--neon-cyan)}table tr:nth-child(even){background:rgba(0,245,255,0.03)}table tr:hover{background:rgba(255,0,255,0.05)}::-webkit-scrollbar{width:12px}::-webkit-scrollbar-track{background:var(--bg-dark)}::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--neon-cyan),var(--neon-magenta));border-radius:6px}.btn-primary{background:linear-gradient(135deg,var(--neon-cyan),var(--neon-magenta))!important;border:none!important;color:#000!important;font-weight:700;box-shadow:0 0 20px rgba(0,245,255,0.4)}.btn-primary:hover{box-shadow:0 0 40px rgba(255,0,255,0.6)!important;transform:translateY(-2px)}.alert{background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(255,0,255,0.05))!important;border-left:4px solid var(--neon-cyan)!important;border-radius:8px}::selection{background:var(--neon-magenta);color:#000}</style><style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style><style>.markdown-alert.markdown-alert-important {border-left-color:var(--borderColor-done-emphasis, var(--color-done-emphasis));background-color:var(--color-done-subtle);}.markdown-alert.markdown-alert-important .markdown-alert-title {color: var(--fgColor-done,var(--color-done-fg));}</style><style>.markdown-alert.markdown-alert-warning {border-left-color:var(--borderColor-attention-emphasis, var(--color-attention-emphasis));background-color:var(--color-attention-subtle);}.markdown-alert.markdown-alert-warning .markdown-alert-title {color: var(--fgColor-attention,var(--color-attention-fg));}</style><style>.markdown-alert.markdown-alert-caution {border-left-color:var(--borderColor-danger-emphasis, var(--color-danger-emphasis));background-color:var(--color-danger-subtle);}.markdown-alert.markdown-alert-caution .markdown-alert-title {color: var(--fgColor-danger,var(--color-danger-fg));}</style>
+<style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');:root{--neon-cyan:#00f5ff;--neon-magenta:#ff00ff;--neon-green:#39ff14;--neon-orange:#ffae00;--bg-dark:#0a0e27;--bg-card:#131829}body{background:linear-gradient(135deg,#0a0e27 0%,1a1f3a 50%,0d1221 100%);font-family:'Rajdhani',sans-serif;min-height:100vh}.markdown-body{background:transparent!important;color:#e0e6ed}h1,h2,h3{font-family:'Orbitron',sans-serif!important;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 20px rgba(0,245,255,0.3)}a{color:var(--neon-cyan);text-shadow:0 0 10px rgba(0,245,255,0.5);transition:all 0.3s ease}a:hover{color:var(--neon-magenta);text-shadow:0 0 20px rgba(255,0,255,0.8);transform:scale(1.05)}img{border-radius:12px;box-shadow:0 0 30px rgba(0,245,255,0.2),0 0 60px rgba(255,0,255,0.1);transition:all 0.4s ease}img:hover{box-shadow:0 0 40px rgba(0,245,255,0.4),0 0 80px rgba(255,0,255,0.2);transform:scale(1.02)}code,pre{background:rgba(0,245,255,0.05)!important;border:1px solid rgba(0,245,255,0.3);border-radius:8px;box-shadow:0 0 15px rgba(0,245,255,0.1)}blockquote{border-left:4px solid var(--neon-cyan);background:linear-gradient(90deg,rgba(0,245,255,0.1),transparent);color:var(--neon-cyan)}table{border-collapse:separate;border-spacing:0;border:1px solid rgba(0,245,255,0.3);border-radius:12px;overflow:hidden}table th{background:linear-gradient(135deg,rgba(0,245,255,0.2),rgba(255,0,255,0.1));font-family:'Orbitron',sans-serif;color:var(--neon-cyan)}table tr:nth-child(even){background:rgba(0,245,255,0.03)}table tr:hover{background:rgba(255,0,255,0.05)}::-webkit-scrollbar{width:12px}::-webkit-scrollbar-track{background:var(--bg-dark)}::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--neon-cyan),var(--neon-magenta));border-radius:6px}.btn-primary{background:linear-gradient(135deg,var(--neon-cyan),var(--neon-magenta))!important;border:none!important;color:#000!important;font-weight:700;box-shadow:0 0 20px rgba(0,245,255,0.4)}.btn-primary:hover{box-shadow:0 0 40px rgba(255,0,255,0.6)!important;transform:translateY(-2px)}.alert{background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(255,0,255,0.05))!important;border-left:4px solid var(--neon-cyan)!important;border-radius:8px}::selection{background:var(--neon-magenta);color:#000}</style>
 
 
 
@@ -84,241 +116,482 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><h1>分子动力学模拟前的准备工作</h1>
-<p>分子动力学模拟是一项复杂且需要精细准备的工作。以下是分子动力学模拟前的详细准备流程，包含每一步操作的具体命令和注意事项，以确保模拟结果的准确性和可靠性。</p>
+<div class="markdown-body" id="postBody"><h1>⚛️ Amber 金属蛋白分子动力学建模完全指南</h1>
+<blockquote>
+<p>🧪 精通金属蛋白酶的分子动力学模拟，从结构准备到生产运行的全流程解析</p>
+</blockquote>
 <hr>
-<h2>1. 准备非标准残基的构建</h2>
+<h2>📋 目录</h2>
 <ul>
-<li><strong>步骤</strong>：<br>
-将分子对接得到的小分子进行加氢处理，将金属单独提取，生成一个单独的 PDB 文件。</li>
-<li><strong>目的</strong>：<br>
-确保小分子和金属离子的结构准确，为后续建模提供可靠基础。</li>
+<li><a href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86">前置知识</a></li>
+<li><a href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">准备工作</a></li>
+<li><a href="#%E8%AF%A6%E7%BB%86%E6%B5%81%E7%A8%8B">详细流程</a></li>
+<li><a href="#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
+<li><a href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">常见问题</a></li>
 </ul>
-<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>非标准残基的准确构建非常关键，后续所有操作都依赖于这一步骤的质量。</p>
-</div>
 <hr>
-<h2>2. 转换小分子 PDB 文件为 mol2 格式</h2>
+<h2>🎯 前置知识</h2>
+<p>分子动力学模拟是一项复杂且需要精细准备的工作。本教程将带你完成 <strong>金属蛋白酶</strong> 的 Amber 建模全流程，包含每一步操作的具体命令和注意事项。</p>
+<h3>适用场景</h3>
 <ul>
-<li>
-<p><strong>命令</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">antechamber -i BZE.pdb -fi pdb -o BZE.mol2 -fo mol2 -c bcc -rn BZE -at gaff -pf Y -j 5 -nc 0</pre></div>
-<ul>
-<li><strong>说明</strong>：<br>
-<code class="notranslate">-nc 0</code> 表示体系电荷数为 0，需根据实际情况调整。</li>
+<li>✅ 金属蛋白酶复合物体系</li>
+<li>✅ 需要精确处理金属-配体相互作用</li>
+<li>✅ 要求高质量力场参数的体系</li>
 </ul>
-</li>
-<li>
-<p><strong>替代方案</strong>：<br>
-可以通过 Gaussian 的 com 文件计算生成 GESP 文件后，再转换为 mol2 文件和 frcmod 文件。</p>
-</li>
-</ul>
-<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>如果体系的电荷状态较复杂，建议优先使用 <strong>Gaussian</strong> 计算更为准确的电荷分布。</p>
-</div>
 <hr>
-<h2>3. 将 mol2 文件转换为 frcmod 文件</h2>
-<ul>
-<li><strong>命令</strong>：
+<h2>📦 准备工作</h2>
+<h3>环境要求</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> AmberTools 版本建议 &gt;= 20</span>
+<span class="pl-c"><span class="pl-c">#</span> Gaussian 16 (用于量子化学计算)</span>
+<span class="pl-c"><span class="pl-c">#</span> H++ Server (用于蛋白加氢)</span></pre></div>
+<h3>核心工具</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+<th>必要性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>antechamber</strong></td>
+<td>小分子参数化</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>parmchk2</strong></td>
+<td>生成力场参数</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>MCPB.py</strong></td>
+<td>金属位点建模</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>tleap</strong></td>
+<td>构建模拟体系</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>Gaussian</strong></td>
+<td>量子化学计算</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>H++</strong></td>
+<td>蛋白质加氢</td>
+<td>⭐⭐⭐</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>🔬 详细流程</h2>
+<h3>步骤 1️⃣ : 准备非标准残基</h3>
+<p><strong>任务目标</strong>：将分子对接得到的小分子进行加氢处理，并将金属离子提取为独立的 PDB 文件。</p>
+<p><strong>操作步骤</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 使用可视化工具（如 PyMOL、VMD）分离金属离子</span>
+<span class="pl-c"><span class="pl-c">#</span> 确保小分子和金属离子的结构准确</span></pre></div>
+<blockquote>
+<p>[!NOTE] 💡<br>
+<strong>关键提示</strong>：非标准残基的准确构建是整个流程的基石。所有后续操作都依赖于这一步骤的质量，请务必仔细检查结构文件。</p>
+</blockquote>
+<p><strong>验证要点</strong>：</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 小分子氢原子完整</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 金属离子单独存在</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 文件格式为 PDB</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 原子命名规范</li>
+</ul>
+<hr>
+<h3>步骤 2️⃣ : 转换小分子为 mol2 格式</h3>
+<p><strong>使用 Antechamber 进行参数化</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">antechamber -i BZE.pdb -fi pdb \
+            -o BZE.mol2 -fo mol2 \
+            -c bcc -rn BZE \
+            -at gaff -pf Y -j 5 \
+            -nc 0</pre></div>
+<p><strong>参数说明</strong>：</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">-i</code></td>
+<td>输入文件</td>
+<td>BZE.pdb</td>
+</tr>
+<tr>
+<td><code class="notranslate">-o</code></td>
+<td>输出文件</td>
+<td>BZE.mol2</td>
+</tr>
+<tr>
+<td><code class="notranslate">-c bcc</code></td>
+<td>电荷计算方法</td>
+<td>AM1-BCC</td>
+</tr>
+<tr>
+<td><code class="notranslate">-nc 0</code></td>
+<td>体系电荷数</td>
+<td>根据实际情况调整</td>
+</tr>
+<tr>
+<td><code class="notranslate">-at gaff</code></td>
+<td>原子类型</td>
+<td>GAFF 力场</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<blockquote>
+<p>[!TIP] 🚀<br>
+<strong>高级选项</strong>：对于复杂电荷体系，建议使用 <strong>Gaussian</strong> 进行 RESP 电荷计算，可获得更准确的电荷分布。</p>
+</blockquote>
+<p><strong>替代方案</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> Gaussian 计算流程</span>
+<span class="pl-c"><span class="pl-c">#</span> 1. 优化结构</span>
+<span class="pl-c"><span class="pl-c">#</span> 2. 计算 ESP 电荷</span>
+<span class="pl-c"><span class="pl-c">#</span> 3. 生成 GESP 文件</span>
+<span class="pl-c"><span class="pl-c">#</span> 4. 转换为 mol2 + frcmod</span></pre></div>
+<hr>
+<h3>步骤 3️⃣ : 生成力场参数文件</h3>
+<p><strong>使用 parmchk2 生成 frcmod</strong>：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">parmchk2 -i NDP1.mol2 -f mol2 -o NDP1.frcmod -a Y</pre></div>
-</li>
-<li><strong>目的</strong>：<br>
-为后续 Leap 建模准备力场参数文件。</li>
+<p><strong>目的</strong>：为后续 Leap 建模准备力场参数文件。</p>
+<blockquote>
+<p>[!IMPORTANT] <g-emoji class="g-emoji" alias="warning">⚠️</g-emoji><br>
+<strong>质量检查</strong>：确保 mol2 文件的原子类型和化学环境正确。错误的原子类型会导致 frcmod 文件参数生成失败。</p>
+</blockquote>
+<p><strong>验证清单</strong>：</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> frcmod 文件成功生成</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 无 WARNING 或 ERROR 信息</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 原子类型识别正确</li>
 </ul>
-<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>确保 mol2 文件的原子类型和化学环境正确，避免影响 frcmod 文件的参数生成。</p>
-</div>
 <hr>
-<h2>4. 处理金属离子</h2>
-<ul>
-<li><strong>脚本</strong>：使用 Amber 自带脚本 <code class="notranslate">metalpdb2mol2.py</code> 处理金属离子。</li>
-<li><strong>命令</strong>：
+<h3>步骤 4️⃣ : 处理金属离子</h3>
+<p><strong>使用 Amber 专用脚本处理金属</strong>：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">./metalpdb2mol2.py -i FE.pdb -o FE.mol2 -c 2</pre></div>
+<p><strong>参数解释</strong>：</p>
 <ul>
-<li><strong>说明</strong>：<br>
-<code class="notranslate">-c 2</code> 表示金属离子的电荷数为 2。</li>
+<li><code class="notranslate">-c 2</code>：金属离子电荷数为 +2</li>
+<li>支持的金属：Fe, Zn, Mg, Ca, Cu 等</li>
 </ul>
-</li>
+<blockquote>
+<p>[!CAUTION] 🔥<br>
+<strong>重要警告</strong>：金属离子的电荷状态对模拟结果影响重大！务必通过以下方式确认电荷数：</p>
+<ul>
+<li>文献调研</li>
+<li>DFT 计算</li>
+<li>实验数据</li>
 </ul>
-<div class="markdown-alert markdown-alert-caution"><p class="markdown-alert-title"><svg class="octicon octicon-stop mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Caution</p><p>金属离子的电荷状态对模拟结果影响重大。务必确认电荷数准确，并检查生成的 mol2 文件是否符合预期。</p>
-</div>
+</blockquote>
 <hr>
-<h2>5. 准备标准残基 PDB 文件</h2>
-<ul>
-<li><strong>重要提示</strong>：<br>
-将对接中的蛋白通过去水、加氢并去除所有非标准残基，保存为标准残基 PDB 文件。</li>
-<li><strong>推荐工具</strong>：<br>
-使用 <strong>H++</strong> 进行加氢，生成的 PDB 文件与 Amber 配套性更好。</li>
-<li><strong>命令</strong>：
-<div class="highlight highlight-source-shell"><pre class="notranslate">ambpdb -p 0.15_80_10_pH6.5_1OKL.top -c 0.15_80_10_pH6.5_1OKL.crd <span class="pl-k">&gt;</span> 1OKL_Hpp.pdb</pre></div>
-</li>
-</ul>
-<div class="markdown-alert markdown-alert-warning"><p class="markdown-alert-title"><svg class="octicon octicon-alert mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Warning</p><p>在处理蛋白时，请确保所有非标准残基（如配体、离子等）已经正确分离，否则可能导致后续模拟出错。</p>
-</div>
+<h3>步骤 5️⃣ : 准备标准残基 PDB</h3>
+<p><strong>蛋白质预处理</strong>：</p>
+<ol>
+<li><strong>去除溶剂和杂质</strong></li>
+<li><strong>添加氢原子</strong>（推荐使用 H++ Server）</li>
+<li><strong>去除所有非标准残基</strong></li>
+</ol>
+<p><strong>使用 H++ 加氢</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 上传到 H++ Server</span>
+<span class="pl-c"><span class="pl-c">#</span> 下载加氢后的 PDB 文件</span></pre></div>
+<p><strong>使用 Amber 命令</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">ambpdb -p 0.15_80_10_pH6.5_1OKL.top \
+       -c 0.15_80_10_pH6.5_1OKL.crd \
+       <span class="pl-k">&gt;</span> 1OKL_Hpp.pdb</pre></div>
+<blockquote>
+<p>[!WARNING] ⚡<br>
+<strong>关键注意</strong>：确保所有非标准残基（配体、离子等）已完全分离，否则会导致建模失败！</p>
+</blockquote>
 <hr>
-<h2>6. 合并所有 PDB 文件</h2>
-<ul>
-<li><strong>步骤</strong>：<br>
-按以下顺序合并 PDB 文件：标准残基 → 金属离子 → 配体 → 水分子。</li>
-<li><strong>命令</strong>：
-<div class="highlight highlight-source-shell"><pre class="notranslate">cat FE.pdb CPA.pdb CPB.pdb <span class="pl-k">&gt;</span> FC_pre.pdb</pre></div>
-</li>
-</ul>
-<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>为保持文件清晰，可以在合并文件后，手动检查每个部分的完整性，避免遗漏重要内容。</p>
-</div>
-<hr>
-<h2>7. 使用 pdb4amber 重新编号 PDB 文件</h2>
-<ul>
-<li><strong>注意</strong>：删除合并后的 PDB 文件中的 <code class="notranslate">TER</code> 行。</li>
-<li><strong>命令</strong>：
-<div class="highlight highlight-source-shell"><pre class="notranslate">pdb4amber -i FC_pre.pdb -o FC.pdb</pre></div>
-</li>
-</ul>
-<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>合并后的文件需要再次检查编号是否一致，尤其是金属离子和配体部分。</p>
-</div>
-<hr>
-<h2>8. 创建输入文件 FC.in</h2>
-<ul>
-<li><strong>文件内容</strong>：
-<div class="highlight highlight-source-ini"><pre class="notranslate"><span class="pl-k">original_pdb</span>=FC.pdb
-<span class="pl-k">group_name</span>=FC
-<span class="pl-k">cut_off</span>=2.5
-<span class="pl-k">ion_ids</span>=1
-<span class="pl-k">ion_mol2files</span>=FE.mol2
-<span class="pl-k">naa_mol2files</span>=<span class="pl-s"><span class="pl-pds">"</span>CPA.mol2 CPB.mol2<span class="pl-pds">"</span></span>
-<span class="pl-k">frcmod_files</span>=<span class="pl-s"><span class="pl-pds">"</span>CPA.frcmod CPB.frcmod<span class="pl-pds">"</span></span>
-<span class="pl-k">additional_resids</span>=<span class="pl-s"><span class="pl-pds">"</span>2 3<span class="pl-pds">"</span></span></pre></div>
-</li>
-<li><strong>执行命令</strong>：
-<div class="highlight highlight-source-shell"><pre class="notranslate">MCPB.py -i FC.in -s 1</pre></div>
-</li>
-</ul>
-<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>输入文件中的所有路径和文件名需要准确无误，否则将导致运行失败。</p>
-</div>
-<hr>
-<h2>9. 生成模型的 PDB 和指纹文件</h2>
-<ul>
-<li><strong>说明</strong>：<br>
-小型模型和大型模型的 Gaussian 输入文件（.com）也会生成，建议对大型模型的氢原子进行优化。</li>
-<li><strong>手动调整</strong>：<br>
-在指纹文件末尾添加建连信息：
-<pre lang="plaintext" class="notranslate"><code class="notranslate">LINK 原子编号1-原子名1 原子编号2-原子名2
+<h3>步骤 6️⃣ : 合并所有 PDB 文件</h3>
+<p><strong>按以下顺序合并</strong>：</p>
+<pre class="notranslate"><code class="notranslate">标准残基 → 金属离子 → 配体 → 水分子
 </code></pre>
-</li>
+<p><strong>执行命令</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">cat FE.pdb CPA.pdb CPB.pdb <span class="pl-k">&gt;</span> FC_pre.pdb</pre></div>
+<p><strong>手动检查要点</strong>：</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 各部分完整性</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 无重叠原子</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 残基编号连续</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 删除 TER 行</li>
 </ul>
-<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>如果发现金属未正确配位，可手动调整指纹文件中的建连关系，确保参数正确。</p>
-</div>
+<blockquote>
+<p>[!TIP] 💡<br>
+<strong>建议</strong>：使用 PyMOL 或 VMD 可视化检查合并后的结构，确保空间位置正确。</p>
+</blockquote>
 <hr>
-<h2>10. 执行 Gaussian/GAMESS-US 计算</h2>
+<h3>步骤 7️⃣ : 重新编号 PDB 文件</h3>
+<p><strong>使用 pdb4amber 工具</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 先删除 TER 行</span>
+sed -i <span class="pl-s"><span class="pl-pds">'</span>/^TER/d<span class="pl-pds">'</span></span> FC_pre.pdb
+
+<span class="pl-c"><span class="pl-c">#</span> 重新编号</span>
+pdb4amber -i FC_pre.pdb -o FC.pdb</pre></div>
+<blockquote>
+<p>[!NOTE] 📝<br>
+<strong>质量检查</strong>：重点检查金属离子和配体部分的编号，确保与后续输入文件一致。</p>
+</blockquote>
+<hr>
+<h3>步骤 8️⃣ : 创建 MCPB.py 输入文件</h3>
+<p><strong>创建 <code class="notranslate">FC.in</code> 文件</strong>：</p>
+<div class="highlight highlight-source-ini"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 输入文件配置</span>
+<span class="pl-k">original_pdb</span> = FC.pdb
+<span class="pl-k">group_name</span> = FC
+<span class="pl-k">cut_off</span> = 2.5
+
+<span class="pl-c"><span class="pl-c">#</span> 金属离子设置</span>
+<span class="pl-k">ion_ids</span> = 1
+<span class="pl-k">ion_mol2files</span> = FE.mol2
+
+<span class="pl-c"><span class="pl-c">#</span> 配体设置</span>
+<span class="pl-k">naa_mol2files</span> = <span class="pl-s"><span class="pl-pds">"</span>CPA.mol2 CPB.mol2<span class="pl-pds">"</span></span>
+<span class="pl-k">frcmod_files</span> = <span class="pl-s"><span class="pl-pds">"</span>CPA.frcmod CPB.frcmod<span class="pl-pds">"</span></span>
+
+<span class="pl-c"><span class="pl-c">#</span> 残基编号</span>
+<span class="pl-k">additional_resids</span> = <span class="pl-s"><span class="pl-pds">"</span>2 3<span class="pl-pds">"</span></span></pre></div>
+<p><strong>执行第一阶段建模</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">MCPB.py -i FC.in -s 1</pre></div>
+<blockquote>
+<p>[!IMPORTANT] <g-emoji class="g-emoji" alias="warning">⚠️</g-emoji><br>
+<strong>严格检查</strong>：输入文件中的所有路径和文件名必须准确无误，大小写敏感！</p>
+</blockquote>
+<hr>
+<h3>步骤 9️⃣ : 生成模型并手动调整</h3>
+<p><strong>自动生成内容</strong>：</p>
 <ul>
-<li><strong>步骤</strong>：<br>
-对 <code class="notranslate">.com</code> 文件进行计算，生成的 <code class="notranslate">.chk</code> 文件需转换为 <code class="notranslate">.fchk</code> 并复制到同一文件夹。</li>
-<li><strong>优化建议</strong>：<br>
-如果结构合理，可跳过小模型的结构优化，但建议进行验证。</li>
+<li>✅ 模型 PDB 文件</li>
+<li>✅ 指纹文件（.fcf）</li>
+<li>✅ Gaussian 输入文件（.com）</li>
 </ul>
-<div class="markdown-alert markdown-alert-caution"><p class="markdown-alert-title"><svg class="octicon octicon-stop mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Caution</p><p>Gaussian 输入文件的多重度设置需与体系的真实电子结构一致，错误的设置可能导致计算失败或错误结果。</p>
-</div>
-<hr>
-<h2>11. 执行最终建模</h2>
+<p><strong>手动优化建议</strong>：</p>
+<pre lang="plaintext" class="notranslate"><code class="notranslate"># 在指纹文件末尾添加建连信息
+LINK 原子编号1-原子名1 原子编号2-原子名2
+</code></pre>
+<blockquote>
+<p>[!TIP] 🎯<br>
+<strong>优化策略</strong>：如果发现金属未正确配位，可手动调整指纹文件中的建连关系，确保参数准确。</p>
+</blockquote>
+<p><strong>可视化检查</strong>：</p>
 <ul>
-<li><strong>命令</strong>：
-<div class="highlight highlight-source-shell"><pre class="notranslate">MCPB.py -i FC.in -s 2</pre></div>
-</li>
-<li><strong>结果检查</strong>：<br>
-如果未输出键长或键角参数，需检查是否正确识别配位键。</li>
-<li><strong>生成 RESP 电荷拟合文件</strong>：
-<div class="highlight highlight-source-shell"><pre class="notranslate">MCPB.py -i FC.in -s 3a</pre></div>
-</li>
-<li><strong>生成 tleap 输入文件</strong>：
-<div class="highlight highlight-source-shell"><pre class="notranslate">MCPB.py -i FC.in -s 4</pre></div>
-</li>
-<li><strong>生成拓扑和坐标文件</strong>：
-<div class="highlight highlight-source-shell"><pre class="notranslate">tleap -s -f FC_tleap.in <span class="pl-k">&gt;</span> FC_tleap.out</pre></div>
-</li>
+<li>使用 VMD 查看配位键</li>
+<li>检查键长是否合理</li>
+<li>验证配位几何构型</li>
 </ul>
-<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>生成的拓扑文件需要与预期结果逐一对比，避免出现重要参数遗漏或错误。</p>
-</div>
 <hr>
-<h2>12. 检查和修复</h2>
-<ul>
-<li><strong>检查命令</strong>：
+<h3>步骤 🔟 : 执行量子化学计算</h3>
+<p><strong>Gaussian 计算流程</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 1. 提交小模型计算（可选）</span>
+gussian <span class="pl-k">&lt;</span> small_model.com <span class="pl-k">&gt;</span> small_model.log
+
+<span class="pl-c"><span class="pl-c">#</span> 2. 提交大模型计算</span>
+gussian <span class="pl-k">&lt;</span> large_model.com <span class="pl-k">&gt;</span> large_model.log
+
+<span class="pl-c"><span class="pl-c">#</span> 3. 转换检查点文件</span>
+formchk large_model.chk large_model.fchk</pre></div>
+<blockquote>
+<p>[!CAUTION] 🔥<br>
+<strong>关键警告</strong>：Gaussian 输入文件的<strong>多重度设置</strong>必须与体系真实电子结构一致！</p>
+</blockquote>
+<p><strong>验证要点</strong>：</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 计算正常收敛</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 无 SCF 不收敛错误</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 生成 .fchk 文件</li>
+</ul>
+<hr>
+<h3>步骤 1️⃣1️⃣ : 执行最终建模</h3>
+<p><strong>完整建模流程</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> Step 2: 生成模型参数</span>
+MCPB.py -i FC.in -s 2
+
+<span class="pl-c"><span class="pl-c">#</span> Step 3a: RESP 电荷拟合</span>
+MCPB.py -i FC.in -s 3a
+
+<span class="pl-c"><span class="pl-c">#</span> Step 4: 生成 tleap 输入文件</span>
+MCPB.py -i FC.in -s 4
+
+<span class="pl-c"><span class="pl-c">#</span> 使用 tleap 构建体系</span>
+tleap -s -f FC_tleap.in <span class="pl-k">&gt;</span> FC_tleap.out</pre></div>
+<p><strong>结果检查清单</strong>：</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 输出键长、键角参数</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 金属配位键正确识别</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> RESP 电荷合理</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> tleap 无错误信息</li>
+</ul>
+<blockquote>
+<p>[!NOTE] 📊<br>
+<strong>参数验证</strong>：将生成的拓扑文件与预期结果逐一对比，避免遗漏重要参数。</p>
+</blockquote>
+<hr>
+<h3>步骤 1️⃣2️⃣ : 修复原子顺序</h3>
+<p><strong>检查原子顺序</strong>：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">cpptraj -p FC_solv.prmtop</pre></div>
-</li>
-<li><strong>修复步骤</strong>：
-<ul>
-<li>创建 <code class="notranslate">fixatord.in</code>：
+<p><strong>创建修复脚本 <code class="notranslate">fixatord.in</code></strong>：</p>
 <div class="highlight highlight-source-ini"><pre class="notranslate">fixatomorder outprefix fixed
 trajout restart fixed.FC_solv.inpcrd
 run
 quit</pre></div>
-</li>
-<li><strong>执行修复</strong>：
-<div class="highlight highlight-source-shell"><pre class="notranslate">cpptraj -p FC_solv.prmtop -c FC_solv.inpcrd -i fixatord.in <span class="pl-k">&gt;</span> fixatord.out</pre></div>
-</li>
-</ul>
-</li>
-</ul>
-<div class="markdown-alert markdown-alert-warning"><p class="markdown-alert-title"><svg class="octicon octicon-alert mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Warning</p><p>未修复的原子顺序问题可能导致后续模拟失败，请务必检查文件一致性。</p>
-</div>
+<p><strong>执行修复</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">cpptraj -p FC_solv.prmtop \
+        -c FC_solv.inpcrd \
+        -i fixatord.in \
+        <span class="pl-k">&gt;</span> fixatord.out</pre></div>
+<blockquote>
+<p>[!WARNING] ⚡<br>
+<strong>重要提示</strong>：未修复的原子顺序问题会导致后续模拟失败！</p>
+</blockquote>
 <hr>
-<h2>13. 检查金属位点参数</h2>
-<ul>
-<li><strong>创建脚本 mcpbpy_parmed.in</strong>：
+<h2>🔍 参数验证</h2>
+<h3>金属位点参数检查</h3>
+<p><strong>创建检查脚本 <code class="notranslate">mcpbpy_parmed.in</code></strong>：</p>
 <div class="highlight highlight-source-ini"><pre class="notranslate">printBonds :FE1
 printAngles :FE1
 printDihedrals :FE1
 printDetails :FE1</pre></div>
-</li>
-<li><strong>命令</strong>：
+<p><strong>执行检查</strong>：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">parmed -i mcpbpy_parmed.in -p FC_solv.prmtop</pre></div>
-</li>
-<li><strong>标准</strong>：
+<h3>关键参数阈值</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>参数类型</th>
+<th>合理范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>键力常数</strong></td>
+<td>&lt; 200 kcal/(mol·Å²)</td>
+<td>过大导致刚性过强</td>
+</tr>
+<tr>
+<td><strong>平衡键距</strong></td>
+<td>&lt; 2.8 Å</td>
+<td>金属-配体距离</td>
+</tr>
+<tr>
+<td><strong>RESP 电荷</strong></td>
+<td>&lt; +1</td>
+<td>金属离子电荷</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<blockquote>
+<p>[!IMPORTANT] <g-emoji class="g-emoji" alias="warning">⚠️</g-emoji><br>
+<strong>核心要点</strong>：金属离子相关参数需要特别关注，任何异常都可能导致模拟失败或严重偏差。</p>
+</blockquote>
+<h3>参数检查要点</h3>
+<h4>🔹 平衡键距要求</h4>
 <ul>
-<li>键力常数 &lt; 200 kcal/(mol*Å²)；</li>
-<li>平衡键距 &lt; 2.8 Å；</li>
-<li>RESP 电荷 &lt; +1。</li>
-</ul>
-</li>
-</ul>
-<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>金属离子相关的参数需要特别关注，任何异常都可能导致模拟失败或偏差。</p>
-</div>
-<h3>金属离子参数检查要点</h3>
-<h4>关键参数阈值</h4>
-<ul>
-<li>
-<p>平衡键距要求：</p>
-<ul>
-<li>通常应保持 &lt; 2.8 Å</li>
+<li>通常应保持 <strong>&lt; 2.8 Å</strong></li>
 <li>与配体原子的键距应在合理范围内</li>
-<li>建议与实验结构进行对比验证</li>
+<li><strong>建议与实验结构对比验证</strong></li>
 </ul>
-</li>
-<li>
-<p>电荷分布要求：</p>
+<h4>🔹 电荷分布要求</h4>
 <ul>
-<li>RESP 电荷 &lt; +1</li>
+<li><strong>RESP 电荷 &lt; +1</strong></li>
 <li>电荷分布应与化学环境相符</li>
 <li>需考虑整体分子的电中性</li>
 </ul>
-</li>
-</ul>
-<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>金属离子相关的参数需要特别关注，任何异常都可能导致模拟失败或偏差：</p>
-<ul>
-<li>不合理的键距可能导致构象不稳定</li>
-<li>错误的电荷分布会影响分子间相互作用</li>
-<li>参数验证建议采用多种方法交叉检验</li>
-</ul>
-</div>
-<h4>实践建议</h4>
+<h4>🔹 实践建议</h4>
 <ol>
-<li>使用可视化工具检查金属配位构型</li>
-<li>运行短时间测试模拟确认体系稳定性</li>
-<li>参考已发表文献中的相似体系参数</li>
-<li>必要时咨询专业人员或社区获取建议</li>
+<li>✅ 使用 <strong>VMD/PyMOL</strong> 检查金属配位构型</li>
+<li>✅ 运行 <strong>短时间测试模拟</strong> 确认稳定性</li>
+<li>✅ 参考<strong>已发表文献</strong>中的相似体系参数</li>
+<li>✅ 必要时<strong>咨询专业人员</strong>或社区获取建议</li>
 </ol>
-<h4>常见问题排查</h4>
+<hr>
+<h2>🛠️ 常见问题排查</h2>
+<h3>问题 1: 结构畸变</h3>
+<p><strong>可能原因</strong>：</p>
 <ul>
-<li>结构畸变：检查力场参数设置</li>
-<li>配位不稳定：优化金属-配体相互作用</li>
-<li>能量异常：校验电荷分布合理性</li>
-</ul></div>
+<li>❌ 力场参数设置错误</li>
+<li>❌ 键长/键角参数不合理</li>
+<li>❌ 金属-配体相互作用过强/过弱</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<pre class="notranslate"><code class="notranslate">检查力场参数 → 调整键常数 → 验证配位几何
+</code></pre>
+<h3>问题 2: 配位不稳定</h3>
+<p><strong>可能原因</strong>：</p>
+<ul>
+<li>❌ 金属-配体键参数不准确</li>
+<li>❌ 电荷分布不合理</li>
+<li>❌ 缺少必要的限制</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<pre class="notranslate"><code class="notranslate">优化量子化学计算 → 重新拟合RESP电荷 → 调整力场参数
+</code></pre>
+<h3>问题 3: 能量异常</h3>
+<p><strong>可能原因</strong>：</p>
+<ul>
+<li>❌ 原子重叠</li>
+<li>❌ 键连错误</li>
+<li>❌ 电荷不守恒</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<pre class="notranslate"><code class="notranslate">可视化检查 → 验证PDB文件 → 检查总电荷
+</code></pre>
+<hr>
+<h2>📚 扩展阅读</h2>
+<h3>推荐资源</h3>
+<ol>
+<li>
+<p><strong>Amber 官方文档</strong></p>
+<ul>
+<li><a href="https://ambermd.org/tutorials/advanced/tutorial20/MCPB.py_tutorial.php" rel="nofollow">MCPB.py Tutorial</a></li>
+<li><a href="https://ambermd.org/tutorials/advanced/tutorial20/" rel="nofollow">Metal Ion Parameterization</a></li>
+</ul>
+</li>
+<li>
+<p><strong>经典文献</strong></p>
+<ul>
+<li>Li P, Merz KM. <em>J Chem Theory Comput</em>. 2014</li>
+<li>Li P, Song LF, Merz KM. <em>J Phys Chem Lett</em>. 2015</li>
+</ul>
+</li>
+<li>
+<p><strong>相关工具</strong></p>
+<ul>
+<li><a href="https://github.com/Amber-MD/species">Metal Binding Site Modeling</a></li>
+<li><a href="https://ambermd.org/forcefields.php" rel="nofollow">Force Field Database</a></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>🎓 总结</h2>
+<p>完成本教程后，你将掌握：</p>
+<p>✅ <strong>完整的金属蛋白建模流程</strong><br>
+✅ <strong>金属位点参数化方法</strong><br>
+✅ <strong>量子化学与分子力学联用技术</strong><br>
+✅ <strong>参数验证和质量控制</strong></p>
+<h3>下一步</h3>
+<ul>
+<li>🔬 尝试更复杂的金属蛋白体系</li>
+<li>⚡ 优化模拟参数以获得更好性能</li>
+<li>📊 学习轨迹分析方法</li>
+<li>🚀 探索增强采样技术</li>
+</ul>
+<hr>
+<blockquote>
+<p>⚡ <strong>LUTRA LABS</strong> - 分子模拟与计算化学研究</p>
+<p>💬 如有问题，欢迎在 GitHub Issues 中讨论</p>
+<p>📧 联系方式: <a href="mailto:lutra@example.com">lutra@example.com</a></p>
+</blockquote>
+<hr>
+<p><strong>🏷️ 标签</strong>: #分子动力学 #Amber #金属蛋白 #计算化学 #MD模拟</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">⚡ COPYRIGHT © 2024 LUTRA LABS · ALL RIGHTS RESERVED ⚡</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
