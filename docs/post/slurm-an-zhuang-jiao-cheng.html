@@ -1856,7 +1856,7 @@ scontrol update NodeName=<node> State=IDLE
 <meta property="og:url" content="https://lutra23.github.io/zous.github.io//post/slurm-an-zhuang-jiao-cheng.html">
 <meta property="og:image" content="https://s21.ax1x.com/2025/01/17/pEFXt10.jpg">
 <title>slurm安装教程</title>
-<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
 
 
 </head>
@@ -2006,20 +2006,21 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <hr>
 <h2>📦 环境准备</h2>
 <h3>系统要求</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 操作系统</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 操作系统
 Ubuntu 20.04 LTS / CentOS 8 / RHEL 8
 
-<span class="pl-c"><span class="pl-c">#</span> 最低配置</span>
+# 最低配置
 CPU: 8核心
 内存: 16 GB
 磁盘: 100 GB
 网络: 千兆以太网
 
-<span class="pl-c"><span class="pl-c">#</span> 推荐配置</span>
+# 推荐配置
 CPU: 16核心+
 内存: 32 GB+
 磁盘: 500 GB SSD
-网络: 万兆以太网</pre></div>
+网络: 万兆以太网
+</code></pre>
 <h3>前置检查清单</h3>
 <ul class="contains-task-list">
 <li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 所有节点系统时间同步（NTP）</li>
@@ -2032,12 +2033,13 @@ CPU: 16核心+
 <h2>🌐 网络配置</h2>
 <h3>步骤 1️⃣ : 配置无密码 SSH</h3>
 <p><strong>生成 SSH 密钥</strong>（普通用户）：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 在管理节点执行</span>
-ssh-keygen -t rsa -b 4096 -C <span class="pl-s"><span class="pl-pds">"</span>cluster-admin<span class="pl-pds">"</span></span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 在管理节点执行
+ssh-keygen -t rsa -b 4096 -C "cluster-admin"
 
-<span class="pl-c"><span class="pl-c">#</span> 分发公钥到所有节点</span>
-sshpass -p <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span> ssh-copy-id -o StrictHostKeyChecking=no \
-    -i <span class="pl-k">~</span>/.ssh/id_rsa.pub username@node_ip</pre></div>
+# 分发公钥到所有节点
+sshpass -p "password" ssh-copy-id -o StrictHostKeyChecking=no \
+    -i ~/.ssh/id_rsa.pub username@node_ip
+</code></pre>
 <blockquote>
 <p>[!NOTE] 💡<br>
 <strong>关键提示</strong>：</p>
@@ -2048,61 +2050,63 @@ sshpass -p <span class="pl-s"><span class="pl-pds">"</span>password<span class="
 </ul>
 </blockquote>
 <p><strong>批量分发脚本</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
-<span class="pl-c"><span class="pl-c">#</span> deploy_ssh_keys.sh</span>
-NODES=(<span class="pl-s"><span class="pl-pds">"</span>node1<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>node2<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>node3<span class="pl-pds">"</span></span>)
-PASSWORD=<span class="pl-s"><span class="pl-pds">"</span>your_password<span class="pl-pds">"</span></span>
-USER=<span class="pl-s"><span class="pl-pds">"</span>hpc<span class="pl-pds">"</span></span>
+<pre lang="bash" class="notranslate"><code class="notranslate">#!/bin/bash
+# deploy_ssh_keys.sh
+NODES=("node1" "node2" "node3")
+PASSWORD="your_password"
+USER="hpc"
 
-<span class="pl-k">for</span> <span class="pl-smi">node</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${NODES[@]}</span><span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-k">do</span>
-    sshpass -p <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$PASSWORD</span><span class="pl-pds">"</span></span> ssh-copy-id -o StrictHostKeyChecking=no \
-        -i <span class="pl-k">~</span>/.ssh/id_rsa.pub <span class="pl-smi">${USER}</span>@<span class="pl-smi">${node}</span>
-    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>✅ SSH key deployed to <span class="pl-smi">$node</span><span class="pl-pds">"</span></span>
-<span class="pl-k">done</span></pre></div>
+for node in "${NODES[@]}"; do
+    sshpass -p "$PASSWORD" ssh-copy-id -o StrictHostKeyChecking=no \
+        -i ~/.ssh/id_rsa.pub ${USER}@${node}
+    echo "✅ SSH key deployed to $node"
+done
+</code></pre>
 <hr>
 <h3>步骤 2️⃣ : 配置静态 IP 和主机名</h3>
 <p><strong>批量配置脚本</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
-<span class="pl-c"><span class="pl-c">#</span> configure_network.sh</span>
-IPS=(<span class="pl-s"><span class="pl-pds">"</span>172.26.96.117<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>172.26.96.118<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>172.26.96.119<span class="pl-pds">"</span></span>)
-HOSTNAMES=(<span class="pl-s"><span class="pl-pds">"</span>node1<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>node2<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>node3<span class="pl-pds">"</span></span>)
-NEW_IPS=(<span class="pl-s"><span class="pl-pds">"</span>192.168.1.201<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>192.168.1.202<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>192.168.1.203<span class="pl-pds">"</span></span>)
-GATEWAY=<span class="pl-s"><span class="pl-pds">"</span>192.168.1.1<span class="pl-pds">"</span></span>
-DNS_SERVERS=(<span class="pl-s"><span class="pl-pds">"</span>8.8.8.8<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>8.8.4.4<span class="pl-pds">"</span></span>)
-INTERFACE=<span class="pl-s"><span class="pl-pds">"</span>ens33<span class="pl-pds">"</span></span>  <span class="pl-c"><span class="pl-c">#</span> 根据实际情况修改</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">#!/bin/bash
+# configure_network.sh
+IPS=("172.26.96.117" "172.26.96.118" "172.26.96.119")
+HOSTNAMES=("node1" "node2" "node3")
+NEW_IPS=("192.168.1.201" "192.168.1.202" "192.168.1.203")
+GATEWAY="192.168.1.1"
+DNS_SERVERS=("8.8.8.8" "8.8.4.4")
+INTERFACE="ens33"  # 根据实际情况修改
 
-<span class="pl-k">for</span> <span class="pl-smi">i</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${<span class="pl-k">!</span>IPS[@]}</span><span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-k">do</span>
-    IP=<span class="pl-smi">${IPS[$i]}</span>
-    HOSTNAME=<span class="pl-smi">${HOSTNAMES[$i]}</span>
-    NEW_IP=<span class="pl-smi">${NEW_IPS[$i]}</span>
+for i in "${!IPS[@]}"; do
+    IP=${IPS[$i]}
+    HOSTNAME=${HOSTNAMES[$i]}
+    NEW_IP=${NEW_IPS[$i]}
 
-    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>🔧 Configuring <span class="pl-smi">$HOSTNAME</span> (<span class="pl-smi">$IP</span> -&gt; <span class="pl-smi">$NEW_IP</span>)<span class="pl-pds">"</span></span>
+    echo "🔧 Configuring $HOSTNAME ($IP -&gt; $NEW_IP)"
 
-    <span class="pl-c"><span class="pl-c">#</span> 设置主机名</span>
-    ssh root@<span class="pl-smi">$IP</span> <span class="pl-s"><span class="pl-pds">"</span>hostnamectl set-hostname <span class="pl-smi">$HOSTNAME</span><span class="pl-pds">"</span></span>
+    # 设置主机名
+    ssh root@$IP "hostnamectl set-hostname $HOSTNAME"
 
-    <span class="pl-c"><span class="pl-c">#</span> 更新 /etc/hosts</span>
-    ssh root@<span class="pl-smi">$IP</span> <span class="pl-s"><span class="pl-pds">"</span>echo '<span class="pl-smi">$NEW_IP</span> <span class="pl-smi">$HOSTNAME</span>' &gt;&gt; /etc/hosts<span class="pl-pds">"</span></span>
+    # 更新 /etc/hosts
+    ssh root@$IP "echo '$NEW_IP $HOSTNAME' &gt;&gt; /etc/hosts"
 
-    <span class="pl-c"><span class="pl-c">#</span> 配置静态 IP（Netplan）</span>
-    ssh root@<span class="pl-smi">$IP</span> <span class="pl-s"><span class="pl-pds">"</span>cat &lt;&lt;EOF &gt; /etc/netplan/01-netcfg.yaml</span>
-<span class="pl-s">network:</span>
-<span class="pl-s">  version: 2</span>
-<span class="pl-s">  ethernets:</span>
-<span class="pl-s">    <span class="pl-smi">$INTERFACE</span>:</span>
-<span class="pl-s">      dhcp4: no</span>
-<span class="pl-s">      addresses: [<span class="pl-smi">$NEW_IP</span>/24]</span>
-<span class="pl-s">      gateway4: <span class="pl-smi">$GATEWAY</span></span>
-<span class="pl-s">      nameservers:</span>
-<span class="pl-s">        addresses: [<span class="pl-smi">${DNS_SERVERS[@]}</span>]</span>
-<span class="pl-s">EOF<span class="pl-pds">"</span></span>
+    # 配置静态 IP（Netplan）
+    ssh root@$IP "cat &lt;&lt;EOF &gt; /etc/netplan/01-netcfg.yaml
+network:
+  version: 2
+  ethernets:
+    $INTERFACE:
+      dhcp4: no
+      addresses: [$NEW_IP/24]
+      gateway4: $GATEWAY
+      nameservers:
+        addresses: [${DNS_SERVERS[@]}]
+EOF"
 
-    <span class="pl-c"><span class="pl-c">#</span> 应用配置</span>
-    ssh root@<span class="pl-smi">$IP</span> <span class="pl-s"><span class="pl-pds">"</span>netplan apply<span class="pl-pds">"</span></span>
+    # 应用配置
+    ssh root@$IP "netplan apply"
 
-    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>✅ <span class="pl-smi">$HOSTNAME</span> configured successfully<span class="pl-pds">"</span></span>
-    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
-<span class="pl-k">done</span></pre></div>
+    echo "✅ $HOSTNAME configured successfully"
+    echo ""
+done
+</code></pre>
 <blockquote>
 <p>[!IMPORTANT] <g-emoji class="g-emoji" alias="warning">⚠️</g-emoji><br>
 <strong>重要警告</strong>：</p>
@@ -2115,43 +2119,46 @@ INTERFACE=<span class="pl-s"><span class="pl-pds">"</span>ens33<span class="pl-p
 <hr>
 <h3>步骤 3️⃣ : 验证网络配置</h3>
 <p><strong>连通性测试</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
-<span class="pl-c"><span class="pl-c">#</span> test_network.sh</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">#!/bin/bash
+# test_network.sh
 
-<span class="pl-c"><span class="pl-c">#</span> 测试节点间连通性</span>
-<span class="pl-k">for</span> <span class="pl-smi">node</span> <span class="pl-k">in</span> node1 node2 node3<span class="pl-k">;</span> <span class="pl-k">do</span>
-    ping -c 3 <span class="pl-smi">$node</span> <span class="pl-k">&amp;&amp;</span> <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>✅ <span class="pl-smi">$node</span> reachable<span class="pl-pds">"</span></span> <span class="pl-k">||</span> <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>❌ <span class="pl-smi">$node</span> unreachable<span class="pl-pds">"</span></span>
-<span class="pl-k">done</span>
+# 测试节点间连通性
+for node in node1 node2 node3; do
+    ping -c 3 $node &amp;&amp; echo "✅ $node reachable" || echo "❌ $node unreachable"
+done
 
-<span class="pl-c"><span class="pl-c">#</span> 测试 SSH 连接</span>
-<span class="pl-k">for</span> <span class="pl-smi">node</span> <span class="pl-k">in</span> node1 node2 node3<span class="pl-k">;</span> <span class="pl-k">do</span>
-    ssh <span class="pl-smi">$node</span> <span class="pl-s"><span class="pl-pds">"</span>hostname &amp;&amp; uptime<span class="pl-pds">"</span></span>
-<span class="pl-k">done</span></pre></div>
+# 测试 SSH 连接
+for node in node1 node2 node3; do
+    ssh $node "hostname &amp;&amp; uptime"
+done
+</code></pre>
 <hr>
 <h2>💾 存储配置</h2>
 <h3>步骤 1️⃣ : 安装 NFS 服务器</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 在管理节点安装</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 在管理节点安装
 sudo apt-get update
 sudo apt-get install -y nfs-kernel-server
 
-<span class="pl-c"><span class="pl-c">#</span> 创建共享目录</span>
+# 创建共享目录
 sudo mkdir -p /opt/shared
 sudo chown nobody:nogroup /opt/shared
-sudo chmod 777 /opt/shared</pre></div>
+sudo chmod 777 /opt/shared
+</code></pre>
 <hr>
 <h3>步骤 2️⃣ : 配置 NFS 导出</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 配置导出规则</span>
-sudo tee -a /etc/exports <span class="pl-s"><span class="pl-k">&lt;&lt;</span><span class="pl-k">EOF</span></span>
-<span class="pl-s"># NFS 导出配置</span>
-<span class="pl-s">/opt/shared 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)</span>
-<span class="pl-s">/home 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)</span>
-<span class="pl-s">/data 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)</span>
-<span class="pl-s"><span class="pl-k">EOF</span></span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 配置导出规则
+sudo tee -a /etc/exports &lt;&lt;EOF
+# NFS 导出配置
+/opt/shared 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
+/home 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
+/data 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
+EOF
 
-<span class="pl-c"><span class="pl-c">#</span> 应用配置</span>
+# 应用配置
 sudo exportfs -ra
 sudo systemctl restart nfs-kernel-server
-sudo systemctl <span class="pl-c1">enable</span> nfs-kernel-server</pre></div>
+sudo systemctl enable nfs-kernel-server
+</code></pre>
 <p><strong>NFS 导出选项说明</strong>：</p>
 <markdown-accessiblity-table><table role="table">
 <thead>
@@ -2205,32 +2212,33 @@ sudo systemctl <span class="pl-c1">enable</span> nfs-kernel-server</pre></div>
 </blockquote>
 <hr>
 <h3>步骤 3️⃣ : 客户端挂载</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
-<span class="pl-c"><span class="pl-c">#</span> mount_nfs.sh</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">#!/bin/bash
+# mount_nfs.sh
 MOUNT_POINTS=(
-    <span class="pl-s"><span class="pl-pds">"</span>/opt/shared:管理节点IP:/opt/shared<span class="pl-pds">"</span></span>
-    <span class="pl-s"><span class="pl-pds">"</span>/home:管理节点IP:/home<span class="pl-pds">"</span></span>
-    <span class="pl-s"><span class="pl-pds">"</span>/data:管理节点IP:/data<span class="pl-pds">"</span></span>
+    "/opt/shared:管理节点IP:/opt/shared"
+    "/home:管理节点IP:/home"
+    "/data:管理节点IP:/data"
 )
 
-<span class="pl-k">for</span> <span class="pl-smi">mount_point</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${MOUNT_POINTS[@]}</span><span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-k">do</span>
-    LOCAL_DIR=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${mount_point<span class="pl-k">%%:*</span>}</span><span class="pl-pds">"</span></span>
-    NFS_PATH=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${mount_point<span class="pl-k">##*:</span>}</span><span class="pl-pds">"</span></span>
+for mount_point in "${MOUNT_POINTS[@]}"; do
+    LOCAL_DIR="${mount_point%%:*}"
+    NFS_PATH="${mount_point##*:}"
 
-    <span class="pl-c"><span class="pl-c">#</span> 创建挂载点</span>
-    sudo mkdir -p <span class="pl-smi">$LOCAL_DIR</span>
+    # 创建挂载点
+    sudo mkdir -p $LOCAL_DIR
 
-    <span class="pl-c"><span class="pl-c">#</span> 测试挂载</span>
-    sudo mount -t nfs <span class="pl-smi">$NFS_PATH</span> <span class="pl-smi">$LOCAL_DIR</span>
+    # 测试挂载
+    sudo mount -t nfs $NFS_PATH $LOCAL_DIR
 
-    <span class="pl-c"><span class="pl-c">#</span> 添加到 /etc/fstab</span>
-    <span class="pl-k">if</span> <span class="pl-k">!</span> grep -q <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$LOCAL_DIR</span><span class="pl-pds">"</span></span> /etc/fstab<span class="pl-k">;</span> <span class="pl-k">then</span>
-        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$NFS_PATH</span> <span class="pl-smi">$LOCAL_DIR</span> nfs defaults,rsize=1048576,wsize=1048576,timeo=600 0 0<span class="pl-pds">"</span></span> <span class="pl-k">|</span> \
+    # 添加到 /etc/fstab
+    if ! grep -q "$LOCAL_DIR" /etc/fstab; then
+        echo "$NFS_PATH $LOCAL_DIR nfs defaults,rsize=1048576,wsize=1048576,timeo=600 0 0" | \
             sudo tee -a /etc/fstab
-    <span class="pl-k">fi</span>
+    fi
 
-    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>✅ Mounted <span class="pl-smi">$LOCAL_DIR</span><span class="pl-pds">"</span></span>
-<span class="pl-k">done</span></pre></div>
+    echo "✅ Mounted $LOCAL_DIR"
+done
+</code></pre>
 <blockquote>
 <p>[!WARNING] ⚡<br>
 <strong>关键注意</strong>：</p>
@@ -2243,117 +2251,122 @@ MOUNT_POINTS=(
 <hr>
 <h2>👥 用户管理</h2>
 <h3>步骤 1️⃣ : 配置 NIS 服务器</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 在管理节点安装 NIS</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 在管理节点安装 NIS
 sudo apt-get update
 sudo apt-get install -y nis
 
-<span class="pl-c"><span class="pl-c">#</span> 设置 NIS domain</span>
-<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>cluster.local<span class="pl-pds">"</span></span> <span class="pl-k">|</span> sudo tee /etc/defaultdomain
+# 设置 NIS domain
+echo "cluster.local" | sudo tee /etc/defaultdomain
 sudo hostnamectl set-hostname master.cluster.local
 
-<span class="pl-c"><span class="pl-c">#</span> 配置 NIS 服务器模式</span>
-sudo sed -i <span class="pl-s"><span class="pl-pds">'</span>s/NISSERVER=false/NISSERVER=master/<span class="pl-pds">'</span></span> /etc/default/nis
+# 配置 NIS 服务器模式
+sudo sed -i 's/NISSERVER=false/NISSERVER=master/' /etc/default/nis
 
-<span class="pl-c"><span class="pl-c">#</span> 配置 yp.conf</span>
-<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>domain cluster.local server master.cluster.local<span class="pl-pds">"</span></span> <span class="pl-k">|</span> \
+# 配置 yp.conf
+echo "domain cluster.local server master.cluster.local" | \
     sudo tee /etc/yp.conf
 
-<span class="pl-c"><span class="pl-c">#</span> 初始化 NIS 数据库</span>
+# 初始化 NIS 数据库
 sudo /usr/lib/yp/ypinit -m
 
-<span class="pl-c"><span class="pl-c">#</span> 启动服务</span>
+# 启动服务
 sudo systemctl restart ypserv ypbind
-sudo systemctl <span class="pl-c1">enable</span> ypserv ypbind</pre></div>
+sudo systemctl enable ypserv ypbind
+</code></pre>
 <hr>
 <h3>步骤 2️⃣ : 配置 NIS 客户端</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
-<span class="pl-c"><span class="pl-c">#</span> configure_nis_client.sh</span>
-NIS_DOMAIN=<span class="pl-s"><span class="pl-pds">"</span>cluster.local<span class="pl-pds">"</span></span>
-NIS_SERVER=<span class="pl-s"><span class="pl-pds">"</span>master.cluster.local<span class="pl-pds">"</span></span>
+<pre lang="bash" class="notranslate"><code class="notranslate">#!/bin/bash
+# configure_nis_client.sh
+NIS_DOMAIN="cluster.local"
+NIS_SERVER="master.cluster.local"
 
-<span class="pl-c"><span class="pl-c">#</span> 安装 NIS 客户端</span>
+# 安装 NIS 客户端
 sudo apt-get install -y nis
 
-<span class="pl-c"><span class="pl-c">#</span> 设置 domain</span>
-<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$NIS_DOMAIN</span><span class="pl-pds">"</span></span> <span class="pl-k">|</span> sudo tee /etc/defaultdomain
+# 设置 domain
+echo "$NIS_DOMAIN" | sudo tee /etc/defaultdomain
 
-<span class="pl-c"><span class="pl-c">#</span> 配置 yp.conf</span>
-<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>domain <span class="pl-smi">$NIS_DOMAIN</span> server <span class="pl-smi">$NIS_SERVER</span><span class="pl-pds">"</span></span> <span class="pl-k">|</span> \
+# 配置 yp.conf
+echo "domain $NIS_DOMAIN server $NIS_SERVER" | \
     sudo tee /etc/yp.conf
 
-<span class="pl-c"><span class="pl-c">#</span> 配置 nsswitch.conf</span>
-sudo sed -i <span class="pl-s"><span class="pl-pds">'</span>s/^passwd:.*/passwd:     files nis/<span class="pl-pds">'</span></span> /etc/nsswitch.conf
-sudo sed -i <span class="pl-s"><span class="pl-pds">'</span>s/^group:.*/group:      files nis/<span class="pl-pds">'</span></span> /etc/nsswitch.conf
-sudo sed -i <span class="pl-s"><span class="pl-pds">'</span>s/^shadow:.*/shadow:     files nis/<span class="pl-pds">'</span></span> /etc/nsswitch.conf
+# 配置 nsswitch.conf
+sudo sed -i 's/^passwd:.*/passwd:     files nis/' /etc/nsswitch.conf
+sudo sed -i 's/^group:.*/group:      files nis/' /etc/nsswitch.conf
+sudo sed -i 's/^shadow:.*/shadow:     files nis/' /etc/nsswitch.conf
 
-<span class="pl-c"><span class="pl-c">#</span> 重启服务</span>
+# 重启服务
 sudo systemctl restart ypbind
-sudo systemctl <span class="pl-c1">enable</span> ypbind
+sudo systemctl enable ypbind
 
-<span class="pl-c"><span class="pl-c">#</span> 验证连接</span>
+# 验证连接
 ypwhich
-<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>✅ NIS client configured<span class="pl-pds">"</span></span></pre></div>
+echo "✅ NIS client configured"
+</code></pre>
 <hr>
 <h3>步骤 3️⃣ : 测试 NIS</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 在管理节点创建测试用户</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 在管理节点创建测试用户
 sudo adduser testuser
 
-<span class="pl-c"><span class="pl-c">#</span> 更新 NIS 数据库</span>
-<span class="pl-c1">cd</span> /var/yp
+# 更新 NIS 数据库
+cd /var/yp
 sudo make
 
-<span class="pl-c"><span class="pl-c">#</span> 在客户端验证</span>
+# 在客户端验证
 getent passwd testuser
-ypcat passwd <span class="pl-k">|</span> grep testuser</pre></div>
+ypcat passwd | grep testuser
+</code></pre>
 <hr>
 <h2>🔐 认证配置</h2>
 <h3>步骤 1️⃣ : 配置 Munge 认证</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 在管理节点安装 Munge</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 在管理节点安装 Munge
 sudo apt-get install -y munge libmunge-dev munge-plugins
 
-<span class="pl-c"><span class="pl-c">#</span> 生成 Munge 密钥</span>
-sudo dd if=/dev/urandom bs=1 count=1024 <span class="pl-k">|</span> \
-    sudo tee /etc/munge/munge.key <span class="pl-k">&gt;</span> /dev/null
+# 生成 Munge 密钥
+sudo dd if=/dev/urandom bs=1 count=1024 | \
+    sudo tee /etc/munge/munge.key &gt; /dev/null
 
-<span class="pl-c"><span class="pl-c">#</span> 设置密钥权限</span>
+# 设置密钥权限
 sudo chown -R munge:munge /etc/munge /var/lib/munge /var/log/munge /var/run/munge
 sudo chmod 400 /etc/munge/munge.key
 sudo chmod 700 /etc/munge /var/lib/munge /var/log/munge /var/run/munge
 
-<span class="pl-c"><span class="pl-c">#</span> 启动服务</span>
+# 启动服务
 sudo systemctl restart munge
-sudo systemctl <span class="pl-c1">enable</span> munge
+sudo systemctl enable munge
 
-<span class="pl-c"><span class="pl-c">#</span> 测试 Munge</span>
-munge -n <span class="pl-k">|</span> unmunge
-<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>✅ Munge is working<span class="pl-pds">"</span></span></pre></div>
+# 测试 Munge
+munge -n | unmunge
+echo "✅ Munge is working"
+</code></pre>
 <hr>
 <h3>步骤 2️⃣ : 分发 Munge 密钥</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
-<span class="pl-c"><span class="pl-c">#</span> distribute_munge_key.sh</span>
-NODES=(<span class="pl-s"><span class="pl-pds">"</span>node1<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>node2<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>node3<span class="pl-pds">"</span></span>)
+<pre lang="bash" class="notranslate"><code class="notranslate">#!/bin/bash
+# distribute_munge_key.sh
+NODES=("node1" "node2" "node3")
 
-<span class="pl-c"><span class="pl-c">#</span> 在所有节点安装 Munge</span>
-<span class="pl-k">for</span> <span class="pl-smi">node</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${NODES[@]}</span><span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-k">do</span>
-    ssh <span class="pl-smi">$node</span> <span class="pl-s"><span class="pl-pds">"</span>sudo apt-get install -y munge libmunge-dev munge-plugins<span class="pl-pds">"</span></span>
-<span class="pl-k">done</span>
+# 在所有节点安装 Munge
+for node in "${NODES[@]}"; do
+    ssh $node "sudo apt-get install -y munge libmunge-dev munge-plugins"
+done
 
-<span class="pl-c"><span class="pl-c">#</span> 分发密钥</span>
-<span class="pl-k">for</span> <span class="pl-smi">node</span> <span class="pl-k">in</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${NODES[@]}</span><span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-k">do</span>
-    <span class="pl-c"><span class="pl-c">#</span> 复制密钥</span>
-    sudo scp /etc/munge/munge.key root@<span class="pl-smi">$node</span>:/etc/munge/munge.key
+# 分发密钥
+for node in "${NODES[@]}"; do
+    # 复制密钥
+    sudo scp /etc/munge/munge.key root@$node:/etc/munge/munge.key
 
-    <span class="pl-c"><span class="pl-c">#</span> 设置权限</span>
-    ssh root@<span class="pl-smi">$node</span> <span class="pl-s"><span class="pl-pds">"</span>chown -R munge:munge /etc/munge /var/lib/munge /var/log/munge /var/run/munge<span class="pl-pds">"</span></span>
-    ssh root@<span class="pl-smi">$node</span> <span class="pl-s"><span class="pl-pds">"</span>chmod 400 /etc/munge/munge.key<span class="pl-pds">"</span></span>
-    ssh root@<span class="pl-smi">$node</span> <span class="pl-s"><span class="pl-pds">"</span>chmod 700 /etc/munge /var/lib/munge /var/log/munge /var/run/munge<span class="pl-pds">"</span></span>
+    # 设置权限
+    ssh root@$node "chown -R munge:munge /etc/munge /var/lib/munge /var/log/munge /var/run/munge"
+    ssh root@$node "chmod 400 /etc/munge/munge.key"
+    ssh root@$node "chmod 700 /etc/munge /var/lib/munge /var/log/munge /var/run/munge"
 
-    <span class="pl-c"><span class="pl-c">#</span> 启动服务</span>
-    ssh root@<span class="pl-smi">$node</span> <span class="pl-s"><span class="pl-pds">"</span>systemctl restart munge<span class="pl-pds">"</span></span>
-    ssh root@<span class="pl-smi">$node</span> <span class="pl-s"><span class="pl-pds">"</span>systemctl enable munge<span class="pl-pds">"</span></span>
+    # 启动服务
+    ssh root@$node "systemctl restart munge"
+    ssh root@$node "systemctl enable munge"
 
-    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>✅ Munge configured on <span class="pl-smi">$node</span><span class="pl-pds">"</span></span>
-<span class="pl-k">done</span></pre></div>
+    echo "✅ Munge configured on $node"
+done
+</code></pre>
 <blockquote>
 <p>[!CAUTION] 🔥<br>
 <strong>重要警告</strong>：</p>
@@ -2367,19 +2380,20 @@ NODES=(<span class="pl-s"><span class="pl-pds">"</span>node1<span class="pl-pds"
 <hr>
 <h2>⚙️ 作业调度系统</h2>
 <h3>步骤 1️⃣ : 安装 SLURM</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 添加 SLURM 仓库（Ubuntu）</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 添加 SLURM 仓库（Ubuntu）
 sudo apt-get install -y wget gnupg
-wget -O- https://download.slurm.slurm.ie.key <span class="pl-k">|</span> sudo apt-key add -
-<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>deb https://download.slurm.ie/slurm/slurm.git-ubuntu <span class="pl-s"><span class="pl-pds">$(</span>lsb_release -c -s<span class="pl-pds">)</span></span> main<span class="pl-pds">"</span></span> <span class="pl-k">|</span> \
+wget -O- https://download.slurm.slurm.ie.key | sudo apt-key add -
+echo "deb https://download.slurm.ie/slurm/slurm.git-ubuntu $(lsb_release -c -s) main" | \
     sudo tee /etc/apt/sources.list.d/slurm.list
 
-<span class="pl-c"><span class="pl-c">#</span> 安装 SLURM</span>
+# 安装 SLURM
 sudo apt-get update
-sudo apt-get install -y slurm-wlm slurm-wlm-docs</pre></div>
+sudo apt-get install -y slurm-wlm slurm-wlm-docs
+</code></pre>
 <hr>
 <h3>步骤 2️⃣ : 配置 SLURM</h3>
 <p><strong>创建配置文件 <code class="notranslate">/etc/slurm-llnl/slurm.conf</code></strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 基础配置</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 基础配置
 ClusterName=hpc-cluster
 SlurmctldPort=6817
 SlurmdPort=6818
@@ -2388,24 +2402,25 @@ StateSaveLocation=/var/spool/slurm/ctld
 SlurmctldPidFile=/var/run/slurmctld.pid
 SlurmdPidFile=/var/run/slurmd.pid
 
-<span class="pl-c"><span class="pl-c">#</span> 认证配置</span>
+# 认证配置
 AuthType=auth/munge
 CryptoType=crypto/munge
 
-<span class="pl-c"><span class="pl-c">#</span> 调度器配置</span>
+# 调度器配置
 SchedulerType=sched/backfill
 SelectType=select/cons_tres
 SelectTypeParameters=CR_Core
 
-<span class="pl-c"><span class="pl-c">#</span> 日志配置</span>
+# 日志配置
 SlurmctldDebug=info
 SlurmctldLogFile=/var/log/slurm/slurmctld.log
 SlurmdDebug=info
 SlurmdLogFile=/var/log/slurm/slurmd.log
 
-<span class="pl-c"><span class="pl-c">#</span> 节点配置</span>
+# 节点配置
 NodeName=node[1-3] CPUs=16 RealMemory=64000 State=UNKNOWN
-PartitionName=normal Nodes=node[1-3] Default=YES MaxTime=INFINITE State=UP</pre></div>
+PartitionName=normal Nodes=node[1-3] Default=YES MaxTime=INFINITE State=UP
+</code></pre>
 <p><strong>配置说明</strong>：</p>
 <markdown-accessiblity-table><table role="table">
 <thead>
@@ -2440,54 +2455,58 @@ PartitionName=normal Nodes=node[1-3] Default=YES MaxTime=INFINITE State=UP</pre>
 </table></markdown-accessiblity-table>
 <hr>
 <h3>步骤 3️⃣ : 启动 SLURM 服务</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 在管理节点</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 在管理节点
 sudo mkdir -p /var/spool/slurm/ctld
 sudo chown slurm:slurm /var/spool/slurm/ctld
 
 sudo systemctl start slurmctld
-sudo systemctl <span class="pl-c1">enable</span> slurmctld
+sudo systemctl enable slurmctld
 
-<span class="pl-c"><span class="pl-c">#</span> 在计算节点</span>
+# 在计算节点
 sudo mkdir -p /var/spool/slurm/d
 sudo chown slurm:slurm /var/spool/slurm/d
 
 sudo systemctl start slurmd
-sudo systemctl <span class="pl-c1">enable</span> slurmd
+sudo systemctl enable slurmd
 
-<span class="pl-c"><span class="pl-c">#</span> 验证状态</span>
+# 验证状态
 sinfo
-scontrol show nodes</pre></div>
+scontrol show nodes
+</code></pre>
 <blockquote>
 <p>[!TIP] 💡<br>
 <strong>验证命令</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 查看集群状态</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 查看集群状态
 sinfo
 
-<span class="pl-c"><span class="pl-c">#</span> 查看节点详情</span>
+# 查看节点详情
 scontrol show nodes
 
-<span class="pl-c"><span class="pl-c">#</span> 测试提交作业</span>
-srun -N 1 hostname</pre></div>
+# 测试提交作业
+srun -N 1 hostname
+</code></pre>
 </blockquote>
 <hr>
 <h2>📊 监控告警</h2>
 <h3>步骤 1️⃣ : 安装 Ganglia</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 管理节点</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 管理节点
 sudo apt-get install -y ganglia-monitor gmetad ganglia-webfrontend
 
-<span class="pl-c"><span class="pl-c">#</span> 计算节点</span>
-sudo apt-get install -y ganglia-monitor</pre></div>
+# 计算节点
+sudo apt-get install -y ganglia-monitor
+</code></pre>
 <hr>
 <h3>步骤 2️⃣ : 配置 Ganglia</h3>
 <p><strong>管理节点 <code class="notranslate">/etc/ganglia/gmetad.conf</code></strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">data_source <span class="pl-s"><span class="pl-pds">"</span>hpc cluster<span class="pl-pds">"</span></span> 60 localhost
-gridname <span class="pl-s"><span class="pl-pds">"</span>HPC Cluster<span class="pl-pds">"</span></span></pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">data_source "hpc cluster" 60 localhost
+gridname "HPC Cluster"
+</code></pre>
 <p><strong>计算节点 <code class="notranslate">/etc/ganglia/gmond.conf</code></strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">cluster {
-  name = <span class="pl-s"><span class="pl-pds">"</span>hpc cluster<span class="pl-pds">"</span></span>
-  owner = <span class="pl-s"><span class="pl-pds">"</span>hpc<span class="pl-pds">"</span></span>
- latlong = <span class="pl-s"><span class="pl-pds">"</span>unspecified<span class="pl-pds">"</span></span>
-  url = <span class="pl-s"><span class="pl-pds">"</span>unspecified<span class="pl-pds">"</span></span>
+<pre lang="bash" class="notranslate"><code class="notranslate">cluster {
+  name = "hpc cluster"
+  owner = "hpc"
+ latlong = "unspecified"
+  url = "unspecified"
 }
 
 udp_send_channel {
@@ -2498,24 +2517,26 @@ udp_send_channel {
 
 udp_recv_channel {
   port = 8649
-}</pre></div>
+}
+</code></pre>
 <hr>
 <h3>步骤 3️⃣ : 启动服务</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 管理节点</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 管理节点
 sudo systemctl restart gmetad ganglia-monitor
-sudo systemctl <span class="pl-c1">enable</span> gmetad ganglia-monitor
+sudo systemctl enable gmetad ganglia-monitor
 sudo systemctl restart apache2
 
-<span class="pl-c"><span class="pl-c">#</span> 计算节点</span>
+# 计算节点
 sudo systemctl restart ganglia-monitor
-sudo systemctl <span class="pl-c1">enable</span> ganglia-monitor
+sudo systemctl enable ganglia-monitor
 
-<span class="pl-c"><span class="pl-c">#</span> 访问 Web 界面</span>
-<span class="pl-c"><span class="pl-c">#</span> http://管理节点IP/ganglia</span></pre></div>
+# 访问 Web 界面
+# http://管理节点IP/ganglia
+</code></pre>
 <hr>
 <h2>🔒 安全加固</h2>
 <h3>1️⃣ : 限制 SSH 访问</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 编辑 /etc/ssh/sshd_config</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 编辑 /etc/ssh/sshd_config
 Port 22
 Protocol 2
 PermitRootLogin no
@@ -2526,176 +2547,185 @@ MaxAuthTries 3
 ClientAliveInterval 300
 ClientAliveCountMax 2
 
-sudo systemctl restart sshd</pre></div>
+sudo systemctl restart sshd
+</code></pre>
 <hr>
 <h3>2️⃣ : 配置防火墙</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
-<span class="pl-c"><span class="pl-c">#</span> configure_firewall.sh</span>
+<pre lang="bash" class="notranslate"><code class="notranslate">#!/bin/bash
+# configure_firewall.sh
 
-<span class="pl-c"><span class="pl-c">#</span> 启用 UFW</span>
-sudo ufw --force <span class="pl-c1">enable</span>
+# 启用 UFW
+sudo ufw --force enable
 
-<span class="pl-c"><span class="pl-c">#</span> 允许本地网络</span>
+# 允许本地网络
 sudo ufw allow from 192.168.1.0/24
 
-<span class="pl-c"><span class="pl-c">#</span> 允许必要端口</span>
-sudo ufw allow 22/tcp      <span class="pl-c"><span class="pl-c">#</span> SSH</span>
-sudo ufw allow 6817/tcp    <span class="pl-c"><span class="pl-c">#</span> SLURM ctld</span>
-sudo ufw allow 6818/tcp    <span class="pl-c"><span class="pl-c">#</span> SLURM d</span>
-sudo ufw allow 8649/tcp    <span class="pl-c"><span class="pl-c">#</span> Ganglia</span>
-sudo ufw allow 2049/tcp    <span class="pl-c"><span class="pl-c">#</span> NFS</span>
+# 允许必要端口
+sudo ufw allow 22/tcp      # SSH
+sudo ufw allow 6817/tcp    # SLURM ctld
+sudo ufw allow 6818/tcp    # SLURM d
+sudo ufw allow 8649/tcp    # Ganglia
+sudo ufw allow 2049/tcp    # NFS
 
-<span class="pl-c"><span class="pl-c">#</span> 拒绝其他连接</span>
+# 拒绝其他连接
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 
-<span class="pl-c"><span class="pl-c">#</span> 查看规则</span>
-sudo ufw status numbered</pre></div>
+# 查看规则
+sudo ufw status numbered
+</code></pre>
 <hr>
 <h3>3️⃣ : 启用审计日志</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 安装 auditd</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 安装 auditd
 sudo apt-get install -y auditd
 
-<span class="pl-c"><span class="pl-c">#</span> 配置审计规则</span>
-sudo tee -a /etc/audit/auditd.rules <span class="pl-s"><span class="pl-k">&lt;&lt;</span><span class="pl-k">EOF</span></span>
-<span class="pl-s"># 监控 SSH 登录</span>
-<span class="pl-s">-w /var/log/auth.log -p wa -k ssh_logins</span>
-<span class="pl-s"></span>
-<span class="pl-s"># 监控用户管理</span>
-<span class="pl-s">-w /etc/passwd -p wa -k identity</span>
-<span class="pl-s">-w /etc/group -p wa -k identity</span>
-<span class="pl-s">-w /etc/shadow -p wa -k identity</span>
-<span class="pl-s"></span>
-<span class="pl-s"># 监控 SLURM 配置</span>
-<span class="pl-s">-w /etc/slurm-llnl/ -p wa -k slurm_config</span>
-<span class="pl-s"><span class="pl-k">EOF</span></span>
+# 配置审计规则
+sudo tee -a /etc/audit/auditd.rules &lt;&lt;EOF
+# 监控 SSH 登录
+-w /var/log/auth.log -p wa -k ssh_logins
+
+# 监控用户管理
+-w /etc/passwd -p wa -k identity
+-w /etc/group -p wa -k identity
+-w /etc/shadow -p wa -k identity
+
+# 监控 SLURM 配置
+-w /etc/slurm-llnl/ -p wa -k slurm_config
+EOF
 
 sudo systemctl restart auditd
-sudo systemctl <span class="pl-c1">enable</span> auditd</pre></div>
+sudo systemctl enable auditd
+</code></pre>
 <hr>
 <h2>⚡ 性能调优</h2>
 <h3>1️⃣ : 系统内核参数优化</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 编辑 /etc/sysctl.conf</span>
-sudo tee -a /etc/sysctl.conf <span class="pl-s"><span class="pl-k">&lt;&lt;</span><span class="pl-k">EOF</span></span>
-<span class="pl-s"># 网络性能优化</span>
-<span class="pl-s">net.core.rmem_max = 16777216</span>
-<span class="pl-s">net.core.wmem_max = 16777216</span>
-<span class="pl-s">net.ipv4.tcp_rmem = 4096 87380 16777216</span>
-<span class="pl-s">net.ipv4.tcp_wmem = 4096 65536 16777216</span>
-<span class="pl-s">net.core.netdev_max_backlog = 30000</span>
-<span class="pl-s"></span>
-<span class="pl-s"># 文件描述符限制</span>
-<span class="pl-s">fs.file-max = 1000000</span>
-<span class="pl-s"></span>
-<span class="pl-s"># 共享内存</span>
-<span class="pl-s">kernel.shmmax = 68719476736</span>
-<span class="pl-s">kernel.shmall = 4294967296</span>
-<span class="pl-s"><span class="pl-k">EOF</span></span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 编辑 /etc/sysctl.conf
+sudo tee -a /etc/sysctl.conf &lt;&lt;EOF
+# 网络性能优化
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
+net.ipv4.tcp_rmem = 4096 87380 16777216
+net.ipv4.tcp_wmem = 4096 65536 16777216
+net.core.netdev_max_backlog = 30000
 
-sudo sysctl -p</pre></div>
+# 文件描述符限制
+fs.file-max = 1000000
+
+# 共享内存
+kernel.shmmax = 68719476736
+kernel.shmall = 4294967296
+EOF
+
+sudo sysctl -p
+</code></pre>
 <hr>
 <h3>2️⃣ : SLURM 调度器优化</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 在 slurm.conf 中添加</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 在 slurm.conf 中添加
 SchedulerType=sched/backfill
 SelectTypeParameters=CR_Core_Memory
 DefMemPerCPU=4096
 MaxMemPerCPU=8192
 
-<span class="pl-c"><span class="pl-c">#</span> 配置 QoS</span>
+# 配置 QoS
 sacctmgr -i create qos normal priority=100
 sacctmgr -i create qos high priority=500
 sacctmgr -i create qos debug priority=10
 
-<span class="pl-c"><span class="pl-c">#</span> 配置公平共享</span>
+# 配置公平共享
 sacctmgr -i create account research
-sacctmgr -i create account production</pre></div>
+sacctmgr -i create account production
+</code></pre>
 <hr>
 <h3>3️⃣ : NFS 性能优化</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 服务器端 /etc/default/nfs-kernel-server</span>
-RPCNFSDOPTS=<span class="pl-s"><span class="pl-pds">"</span>--nfs-version 4.1 --debug<span class="pl-pds">"</span></span>
-RPCMOUNTDOPTS=<span class="pl-s"><span class="pl-pds">"</span>--manage-gids -N 2 -V 3<span class="pl-pds">"</span></span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 服务器端 /etc/default/nfs-kernel-server
+RPCNFSDOPTS="--nfs-version 4.1 --debug"
+RPCMOUNTDOPTS="--manage-gids -N 2 -V 3"
 
-<span class="pl-c"><span class="pl-c">#</span> 客户端挂载选项</span>
+# 客户端挂载选项
 man_node_ip:/opt/shared /opt/shared nfs \
-    rw,hard,intr,rsize=1048576,wsize=1048576,timeo=600,noatime,nodiratime 0 0</pre></div>
+    rw,hard,intr,rsize=1048576,wsize=1048576,timeo=600,noatime,nodiratime 0 0
+</code></pre>
 <hr>
 <h2>🧪 测试验证</h2>
 <h3>MPI 并行测试</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 安装 OpenMPI</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 安装 OpenMPI
 sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev
 
-<span class="pl-c"><span class="pl-c">#</span> 创建测试程序</span>
-cat <span class="pl-k">&gt;</span> hello_world.c <span class="pl-s"><span class="pl-k">&lt;&lt;</span>'<span class="pl-k">EOF</span>'</span>
-<span class="pl-s">#include &lt;mpi.h&gt;</span>
-<span class="pl-s">#include &lt;stdio.h&gt;</span>
-<span class="pl-s"></span>
-<span class="pl-s">int main(int argc, char** argv) {</span>
-<span class="pl-s">    MPI_Init(NULL, NULL);</span>
-<span class="pl-s"></span>
-<span class="pl-s">    int world_size;</span>
-<span class="pl-s">    MPI_Comm_size(MPI_COMM_WORLD, &amp;world_size);</span>
-<span class="pl-s"></span>
-<span class="pl-s">    int world_rank;</span>
-<span class="pl-s">    MPI_Comm_rank(MPI_COMM_WORLD, &amp;world_rank);</span>
-<span class="pl-s"></span>
-<span class="pl-s">    char processor_name[MPI_MAX_PROCESSOR_NAME];</span>
-<span class="pl-s">    int name_len;</span>
-<span class="pl-s">    MPI_Get_processor_name(processor_name, &amp;name_len);</span>
-<span class="pl-s"></span>
-<span class="pl-s">    printf("Hello world from processor %s, rank %d out of %d processors\n",</span>
-<span class="pl-s">           processor_name, world_rank, world_size);</span>
-<span class="pl-s"></span>
-<span class="pl-s">    MPI_Finalize();</span>
-<span class="pl-s">    return 0;</span>
-<span class="pl-s">}</span>
-<span class="pl-s"><span class="pl-k">EOF</span></span>
+# 创建测试程序
+cat &gt; hello_world.c &lt;&lt;'EOF'
+#include &lt;mpi.h&gt;
+#include &lt;stdio.h&gt;
 
-<span class="pl-c"><span class="pl-c">#</span> 编译</span>
+int main(int argc, char** argv) {
+    MPI_Init(NULL, NULL);
+
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &amp;world_size);
+
+    int world_rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &amp;world_rank);
+
+    char processor_name[MPI_MAX_PROCESSOR_NAME];
+    int name_len;
+    MPI_Get_processor_name(processor_name, &amp;name_len);
+
+    printf("Hello world from processor %s, rank %d out of %d processors\n",
+           processor_name, world_rank, world_size);
+
+    MPI_Finalize();
+    return 0;
+}
+EOF
+
+# 编译
 mpicc hello_world.c -o hello_world
 
-<span class="pl-c"><span class="pl-c">#</span> 运行测试</span>
-mpirun -np 4 -host node1,node2,node3 ./hello_world</pre></div>
+# 运行测试
+mpirun -np 4 -host node1,node2,node3 ./hello_world
+</code></pre>
 <hr>
 <h3>SLURM 作业测试</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 创建提交脚本</span>
-cat <span class="pl-k">&gt;</span> test_job.sh <span class="pl-s"><span class="pl-k">&lt;&lt;</span>'<span class="pl-k">EOF</span>'</span>
-<span class="pl-s">#!/bin/bash</span>
-<span class="pl-s">#SBATCH --job-name=test_job</span>
-<span class="pl-s">#SBATCH --output=test_job.out</span>
-<span class="pl-s">#SBATCH --error=test_job.err</span>
-<span class="pl-s">#SBATCH --nodes=2</span>
-<span class="pl-s">#SBATCH --ntasks=4</span>
-<span class="pl-s">#SBATCH --time=00:05:00</span>
-<span class="pl-s">#SBATCH --partition=normal</span>
-<span class="pl-s"></span>
-<span class="pl-s">echo "Job started at $(date)"</span>
-<span class="pl-s">echo "Running on $(hostname)"</span>
-<span class="pl-s">srun -n 4 hostname</span>
-<span class="pl-s">echo "Job finished at $(date)"</span>
-<span class="pl-s"><span class="pl-k">EOF</span></span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 创建提交脚本
+cat &gt; test_job.sh &lt;&lt;'EOF'
+#!/bin/bash
+#SBATCH --job-name=test_job
+#SBATCH --output=test_job.out
+#SBATCH --error=test_job.err
+#SBATCH --nodes=2
+#SBATCH --ntasks=4
+#SBATCH --time=00:05:00
+#SBATCH --partition=normal
 
-<span class="pl-c"><span class="pl-c">#</span> 提交作业</span>
+echo "Job started at $(date)"
+echo "Running on $(hostname)"
+srun -n 4 hostname
+echo "Job finished at $(date)"
+EOF
+
+# 提交作业
 sbatch test_job.sh
 
-<span class="pl-c"><span class="pl-c">#</span> 查看作业状态</span>
-squeue -u <span class="pl-smi">$USER</span>
+# 查看作业状态
+squeue -u $USER
 
-<span class="pl-c"><span class="pl-c">#</span> 查看输出</span>
-cat test_job.out</pre></div>
+# 查看输出
+cat test_job.out
+</code></pre>
 <hr>
 <h2>📚 常见问题排查</h2>
 <h3>问题 1: SLURM 作业失败</h3>
 <p><strong>症状</strong>：作业提交后状态为 <code class="notranslate">FAILED</code></p>
 <p><strong>排查步骤</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 查看作业详情</span>
-scontrol show job <span class="pl-k">&lt;</span>job_id<span class="pl-k">&gt;</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 查看作业详情
+scontrol show job &lt;job_id&gt;
 
-<span class="pl-c"><span class="pl-c">#</span> 查看节点状态</span>
+# 查看节点状态
 sinfo -Nel
 
-<span class="pl-c"><span class="pl-c">#</span> 查看日志</span>
+# 查看日志
 sudo tail -f /var/log/slurm/slurmctld.log
-sudo journalctl -u slurmd -f</pre></div>
+sudo journalctl -u slurmd -f
+</code></pre>
 <p><strong>常见原因</strong>：</p>
 <ul>
 <li>❌ 资源请求超过节点可用资源</li>
@@ -2706,30 +2736,32 @@ sudo journalctl -u slurmd -f</pre></div>
 <h3>问题 2: NFS 性能慢</h3>
 <p><strong>症状</strong>：集群性能低于预期</p>
 <p><strong>优化措施</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 调整 NFS 挂载选项</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 调整 NFS 挂载选项
 sudo mount -o remount,rsize=1048576,wsize=1048576,noatime /opt/shared
 
-<span class="pl-c"><span class="pl-c">#</span> 使用 NFS v4.1</span>
+# 使用 NFS v4.1
 man_node:/data /data nfs vers=4.1,rw,hard,intr 0 0
 
-<span class="pl-c"><span class="pl-c">#</span> 检查网络带宽</span>
-iperf -s  <span class="pl-c"><span class="pl-c">#</span> 服务器端</span>
-iperf -c server_ip  <span class="pl-c"><span class="pl-c">#</span> 客户端</span></pre></div>
+# 检查网络带宽
+iperf -s  # 服务器端
+iperf -c server_ip  # 客户端
+</code></pre>
 <hr>
 <h3>问题 3: 节点失联</h3>
 <p><strong>症状</strong>：节点状态为 <code class="notranslate">DOWN</code></p>
 <p><strong>排查步骤</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 测试网络连通性</span>
-ping <span class="pl-k">&lt;</span>node_ip<span class="pl-k">&gt;</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 测试网络连通性
+ping &lt;node_ip&gt;
 
-<span class="pl-c"><span class="pl-c">#</span> 测试 SSH</span>
-ssh <span class="pl-k">&lt;</span>node_hostname<span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>uptime<span class="pl-pds">"</span></span>
+# 测试 SSH
+ssh &lt;node_hostname&gt; "uptime"
 
-<span class="pl-c"><span class="pl-c">#</span> 检查 SLURM 服务</span>
-ssh <span class="pl-k">&lt;</span>node_hostname<span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>systemctl status slurmd<span class="pl-pds">"</span></span>
+# 检查 SLURM 服务
+ssh &lt;node_hostname&gt; "systemctl status slurmd"
 
-<span class="pl-c"><span class="pl-c">#</span> 恢复节点</span>
-scontrol update NodeName=<span class="pl-k">&lt;</span>node<span class="pl-k">&gt;</span> State=IDLE</pre></div>
+# 恢复节点
+scontrol update NodeName=&lt;node&gt; State=IDLE
+</code></pre>
 <hr>
 <h2>🎓 总结</h2>
 <p>完成本教程后，你将拥有：</p>
