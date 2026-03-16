@@ -50,7 +50,7 @@
 <meta property="og:url" content="https://lutra23.github.io/zous.github.io//post/Amber-jin-shu-jian-mo-jiao-cheng.html">
 <meta property="og:image" content="https://s21.ax1x.com/2025/01/17/pEFXt10.jpg">
 <title>Amber金属建模教程</title>
-<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
 
 
 </head>
@@ -141,9 +141,10 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <hr>
 <h2>📦 准备工作</h2>
 <h3>环境要求</h3>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> AmberTools 版本建议 &gt;= 20</span>
-<span class="pl-c"><span class="pl-c">#</span> Gaussian 16 (用于量子化学计算)</span>
-<span class="pl-c"><span class="pl-c">#</span> H++ Server (用于蛋白加氢)</span></pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate"># AmberTools 版本建议 &gt;= 20
+# Gaussian 16 (用于量子化学计算)
+# H++ Server (用于蛋白加氢)
+</code></pre>
 <h3>核心工具</h3>
 <markdown-accessiblity-table><table role="table">
 <thead>
@@ -191,8 +192,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h3>步骤 1️⃣ : 准备非标准残基</h3>
 <p><strong>任务目标</strong>：将分子对接得到的小分子进行加氢处理，并将金属离子提取为独立的 PDB 文件。</p>
 <p><strong>操作步骤</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 使用可视化工具（如 PyMOL、VMD）分离金属离子</span>
-<span class="pl-c"><span class="pl-c">#</span> 确保小分子和金属离子的结构准确</span></pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 使用可视化工具（如 PyMOL、VMD）分离金属离子
+# 确保小分子和金属离子的结构准确
+</code></pre>
 <blockquote>
 <p>[!NOTE] 💡<br>
 <strong>关键提示</strong>：非标准残基的准确构建是整个流程的基石。所有后续操作都依赖于这一步骤的质量，请务必仔细检查结构文件。</p>
@@ -207,11 +209,12 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <hr>
 <h3>步骤 2️⃣ : 转换小分子为 mol2 格式</h3>
 <p><strong>使用 Antechamber 进行参数化</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">antechamber -i BZE.pdb -fi pdb \
+<pre lang="bash" class="notranslate"><code class="notranslate">antechamber -i BZE.pdb -fi pdb \
             -o BZE.mol2 -fo mol2 \
             -c bcc -rn BZE \
             -at gaff -pf Y -j 5 \
-            -nc 0</pre></div>
+            -nc 0
+</code></pre>
 <p><strong>参数说明</strong>：</p>
 <markdown-accessiblity-table><table role="table">
 <thead>
@@ -254,15 +257,17 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <strong>高级选项</strong>：对于复杂电荷体系，建议使用 <strong>Gaussian</strong> 进行 RESP 电荷计算，可获得更准确的电荷分布。</p>
 </blockquote>
 <p><strong>替代方案</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> Gaussian 计算流程</span>
-<span class="pl-c"><span class="pl-c">#</span> 1. 优化结构</span>
-<span class="pl-c"><span class="pl-c">#</span> 2. 计算 ESP 电荷</span>
-<span class="pl-c"><span class="pl-c">#</span> 3. 生成 GESP 文件</span>
-<span class="pl-c"><span class="pl-c">#</span> 4. 转换为 mol2 + frcmod</span></pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate"># Gaussian 计算流程
+# 1. 优化结构
+# 2. 计算 ESP 电荷
+# 3. 生成 GESP 文件
+# 4. 转换为 mol2 + frcmod
+</code></pre>
 <hr>
 <h3>步骤 3️⃣ : 生成力场参数文件</h3>
 <p><strong>使用 parmchk2 生成 frcmod</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">parmchk2 -i NDP1.mol2 -f mol2 -o NDP1.frcmod -a Y</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">parmchk2 -i NDP1.mol2 -f mol2 -o NDP1.frcmod -a Y
+</code></pre>
 <p><strong>目的</strong>：为后续 Leap 建模准备力场参数文件。</p>
 <blockquote>
 <p>[!IMPORTANT] <g-emoji class="g-emoji" alias="warning">⚠️</g-emoji><br>
@@ -277,7 +282,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <hr>
 <h3>步骤 4️⃣ : 处理金属离子</h3>
 <p><strong>使用 Amber 专用脚本处理金属</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">./metalpdb2mol2.py -i FE.pdb -o FE.mol2 -c 2</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">./metalpdb2mol2.py -i FE.pdb -o FE.mol2 -c 2
+</code></pre>
 <p><strong>参数解释</strong>：</p>
 <ul>
 <li><code class="notranslate">-c 2</code>：金属离子电荷数为 +2</li>
@@ -301,12 +307,14 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li><strong>去除所有非标准残基</strong></li>
 </ol>
 <p><strong>使用 H++ 加氢</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 上传到 H++ Server</span>
-<span class="pl-c"><span class="pl-c">#</span> 下载加氢后的 PDB 文件</span></pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate"># 上传到 H++ Server
+# 下载加氢后的 PDB 文件
+</code></pre>
 <p><strong>使用 Amber 命令</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">ambpdb -p 0.15_80_10_pH6.5_1OKL.top \
+<pre lang="bash" class="notranslate"><code class="notranslate">ambpdb -p 0.15_80_10_pH6.5_1OKL.top \
        -c 0.15_80_10_pH6.5_1OKL.crd \
-       <span class="pl-k">&gt;</span> 1OKL_Hpp.pdb</pre></div>
+       &gt; 1OKL_Hpp.pdb
+</code></pre>
 <blockquote>
 <p>[!WARNING] ⚡<br>
 <strong>关键注意</strong>：确保所有非标准残基（配体、离子等）已完全分离，否则会导致建模失败！</p>
@@ -317,7 +325,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <pre class="notranslate"><code class="notranslate">标准残基 → 金属离子 → 配体 → 水分子
 </code></pre>
 <p><strong>执行命令</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">cat FE.pdb CPA.pdb CPB.pdb <span class="pl-k">&gt;</span> FC_pre.pdb</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">cat FE.pdb CPA.pdb CPB.pdb &gt; FC_pre.pdb
+</code></pre>
 <p><strong>手动检查要点</strong>：</p>
 <ul class="contains-task-list">
 <li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 各部分完整性</li>
@@ -332,11 +341,12 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <hr>
 <h3>步骤 7️⃣ : 重新编号 PDB 文件</h3>
 <p><strong>使用 pdb4amber 工具</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 先删除 TER 行</span>
-sed -i <span class="pl-s"><span class="pl-pds">'</span>/^TER/d<span class="pl-pds">'</span></span> FC_pre.pdb
+<pre lang="bash" class="notranslate"><code class="notranslate"># 先删除 TER 行
+sed -i '/^TER/d' FC_pre.pdb
 
-<span class="pl-c"><span class="pl-c">#</span> 重新编号</span>
-pdb4amber -i FC_pre.pdb -o FC.pdb</pre></div>
+# 重新编号
+pdb4amber -i FC_pre.pdb -o FC.pdb
+</code></pre>
 <blockquote>
 <p>[!NOTE] 📝<br>
 <strong>质量检查</strong>：重点检查金属离子和配体部分的编号，确保与后续输入文件一致。</p>
@@ -344,23 +354,25 @@ pdb4amber -i FC_pre.pdb -o FC.pdb</pre></div>
 <hr>
 <h3>步骤 8️⃣ : 创建 MCPB.py 输入文件</h3>
 <p><strong>创建 <code class="notranslate">FC.in</code> 文件</strong>：</p>
-<div class="highlight highlight-source-ini"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 输入文件配置</span>
-<span class="pl-k">original_pdb</span> = FC.pdb
-<span class="pl-k">group_name</span> = FC
-<span class="pl-k">cut_off</span> = 2.5
+<pre lang="ini" class="notranslate"><code class="notranslate"># 输入文件配置
+original_pdb = FC.pdb
+group_name = FC
+cut_off = 2.5
 
-<span class="pl-c"><span class="pl-c">#</span> 金属离子设置</span>
-<span class="pl-k">ion_ids</span> = 1
-<span class="pl-k">ion_mol2files</span> = FE.mol2
+# 金属离子设置
+ion_ids = 1
+ion_mol2files = FE.mol2
 
-<span class="pl-c"><span class="pl-c">#</span> 配体设置</span>
-<span class="pl-k">naa_mol2files</span> = <span class="pl-s"><span class="pl-pds">"</span>CPA.mol2 CPB.mol2<span class="pl-pds">"</span></span>
-<span class="pl-k">frcmod_files</span> = <span class="pl-s"><span class="pl-pds">"</span>CPA.frcmod CPB.frcmod<span class="pl-pds">"</span></span>
+# 配体设置
+naa_mol2files = "CPA.mol2 CPB.mol2"
+frcmod_files = "CPA.frcmod CPB.frcmod"
 
-<span class="pl-c"><span class="pl-c">#</span> 残基编号</span>
-<span class="pl-k">additional_resids</span> = <span class="pl-s"><span class="pl-pds">"</span>2 3<span class="pl-pds">"</span></span></pre></div>
+# 残基编号
+additional_resids = "2 3"
+</code></pre>
 <p><strong>执行第一阶段建模</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">MCPB.py -i FC.in -s 1</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">MCPB.py -i FC.in -s 1
+</code></pre>
 <blockquote>
 <p>[!IMPORTANT] <g-emoji class="g-emoji" alias="warning">⚠️</g-emoji><br>
 <strong>严格检查</strong>：输入文件中的所有路径和文件名必须准确无误，大小写敏感！</p>
@@ -390,14 +402,15 @@ LINK 原子编号1-原子名1 原子编号2-原子名2
 <hr>
 <h3>步骤 🔟 : 执行量子化学计算</h3>
 <p><strong>Gaussian 计算流程</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 1. 提交小模型计算（可选）</span>
-gussian <span class="pl-k">&lt;</span> small_model.com <span class="pl-k">&gt;</span> small_model.log
+<pre lang="bash" class="notranslate"><code class="notranslate"># 1. 提交小模型计算（可选）
+gussian &lt; small_model.com &gt; small_model.log
 
-<span class="pl-c"><span class="pl-c">#</span> 2. 提交大模型计算</span>
-gussian <span class="pl-k">&lt;</span> large_model.com <span class="pl-k">&gt;</span> large_model.log
+# 2. 提交大模型计算
+gussian &lt; large_model.com &gt; large_model.log
 
-<span class="pl-c"><span class="pl-c">#</span> 3. 转换检查点文件</span>
-formchk large_model.chk large_model.fchk</pre></div>
+# 3. 转换检查点文件
+formchk large_model.chk large_model.fchk
+</code></pre>
 <blockquote>
 <p>[!CAUTION] 🔥<br>
 <strong>关键警告</strong>：Gaussian 输入文件的<strong>多重度设置</strong>必须与体系真实电子结构一致！</p>
@@ -411,17 +424,18 @@ formchk large_model.chk large_model.fchk</pre></div>
 <hr>
 <h3>步骤 1️⃣1️⃣ : 执行最终建模</h3>
 <p><strong>完整建模流程</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> Step 2: 生成模型参数</span>
+<pre lang="bash" class="notranslate"><code class="notranslate"># Step 2: 生成模型参数
 MCPB.py -i FC.in -s 2
 
-<span class="pl-c"><span class="pl-c">#</span> Step 3a: RESP 电荷拟合</span>
+# Step 3a: RESP 电荷拟合
 MCPB.py -i FC.in -s 3a
 
-<span class="pl-c"><span class="pl-c">#</span> Step 4: 生成 tleap 输入文件</span>
+# Step 4: 生成 tleap 输入文件
 MCPB.py -i FC.in -s 4
 
-<span class="pl-c"><span class="pl-c">#</span> 使用 tleap 构建体系</span>
-tleap -s -f FC_tleap.in <span class="pl-k">&gt;</span> FC_tleap.out</pre></div>
+# 使用 tleap 构建体系
+tleap -s -f FC_tleap.in &gt; FC_tleap.out
+</code></pre>
 <p><strong>结果检查清单</strong>：</p>
 <ul class="contains-task-list">
 <li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 输出键长、键角参数</li>
@@ -436,17 +450,20 @@ tleap -s -f FC_tleap.in <span class="pl-k">&gt;</span> FC_tleap.out</pre></div>
 <hr>
 <h3>步骤 1️⃣2️⃣ : 修复原子顺序</h3>
 <p><strong>检查原子顺序</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">cpptraj -p FC_solv.prmtop</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">cpptraj -p FC_solv.prmtop
+</code></pre>
 <p><strong>创建修复脚本 <code class="notranslate">fixatord.in</code></strong>：</p>
-<div class="highlight highlight-source-ini"><pre class="notranslate">fixatomorder outprefix fixed
+<pre lang="ini" class="notranslate"><code class="notranslate">fixatomorder outprefix fixed
 trajout restart fixed.FC_solv.inpcrd
 run
-quit</pre></div>
+quit
+</code></pre>
 <p><strong>执行修复</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">cpptraj -p FC_solv.prmtop \
+<pre lang="bash" class="notranslate"><code class="notranslate">cpptraj -p FC_solv.prmtop \
         -c FC_solv.inpcrd \
         -i fixatord.in \
-        <span class="pl-k">&gt;</span> fixatord.out</pre></div>
+        &gt; fixatord.out
+</code></pre>
 <blockquote>
 <p>[!WARNING] ⚡<br>
 <strong>重要提示</strong>：未修复的原子顺序问题会导致后续模拟失败！</p>
@@ -455,12 +472,14 @@ quit</pre></div>
 <h2>🔍 参数验证</h2>
 <h3>金属位点参数检查</h3>
 <p><strong>创建检查脚本 <code class="notranslate">mcpbpy_parmed.in</code></strong>：</p>
-<div class="highlight highlight-source-ini"><pre class="notranslate">printBonds :FE1
+<pre lang="ini" class="notranslate"><code class="notranslate">printBonds :FE1
 printAngles :FE1
 printDihedrals :FE1
-printDetails :FE1</pre></div>
+printDetails :FE1
+</code></pre>
 <p><strong>执行检查</strong>：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">parmed -i mcpbpy_parmed.in -p FC_solv.prmtop</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">parmed -i mcpbpy_parmed.in -p FC_solv.prmtop
+</code></pre>
 <h3>关键参数阈值</h3>
 <markdown-accessiblity-table><table role="table">
 <thead>
