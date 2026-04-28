@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark_dimmed" data-light-theme="dark_dimmed" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <script src='https://blog.liyifan.xyz/assets/GmeekBSZ.js'></script><script src='https://blog.liyifan.xyz/assets/yifantheme.js'></script><link href='https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap' rel='stylesheet'><link href='./css/cyberpunk-theme.css' rel='stylesheet'><link href='https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css' rel='stylesheet'>
+    <link rel="icon" href="https://s21.ax1x.com/2025/01/17/pEFXt10.jpg">
+<meta name="description" content="# ⚛️ Amber 金属蛋白分子动力学建模完全指南
+
+> 🧪 精通金属蛋白酶的分子动力学模拟，从结构准备到生产运行的全流程解析
+
+---
+
+## 📋 目录
+
+- [前置知识](#前置知识)
+- [准备工作](#准备工作)
+- [详细流程](#详细流程)
+- [参数验证](#参数验证)
+- [常见问题](#常见问题)
+
+---
+
+## 🎯 前置知识
+
+分子动力学模拟是一项复杂且需要精细准备的工作。">
+<meta property="og:title" content="Amber金属建模教程">
+<meta property="og:description" content="# ⚛️ Amber 金属蛋白分子动力学建模完全指南
+
+> 🧪 精通金属蛋白酶的分子动力学模拟，从结构准备到生产运行的全流程解析
+
+---
+
+## 📋 目录
+
+- [前置知识](#前置知识)
+- [准备工作](#准备工作)
+- [详细流程](#详细流程)
+- [参数验证](#参数验证)
+- [常见问题](#常见问题)
+
+---
+
+## 🎯 前置知识
+
+分子动力学模拟是一项复杂且需要精细准备的工作。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://lutra23.github.io/zous.github.io//post/Amber-jin-shu-jian-mo-jiao-cheng.html">
+<meta property="og:image" content="https://s21.ax1x.com/2025/01/17/pEFXt10.jpg">
+<title>Amber金属建模教程</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+<style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');:root{--neon-cyan:#00f5ff;--neon-magenta:#ff00ff;--neon-green:#39ff14;--neon-orange:#ffae00;--bg-dark:#0a0e27;--bg-card:#131829}body{background:linear-gradient(135deg,#0a0e27 0%,1a1f3a 50%,0d1221 100%);font-family:'Rajdhani',sans-serif;min-height:100vh}.markdown-body{background:transparent!important;color:#e0e6ed}h1,h2,h3{font-family:'Orbitron',sans-serif!important;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 20px rgba(0,245,255,0.3)}a{color:var(--neon-cyan);text-shadow:0 0 10px rgba(0,245,255,0.5);transition:all 0.3s ease}a:hover{color:var(--neon-magenta);text-shadow:0 0 20px rgba(255,0,255,0.8);transform:scale(1.05)}img{border-radius:12px;box-shadow:0 0 30px rgba(0,245,255,0.2),0 0 60px rgba(255,0,255,0.1);transition:all 0.4s ease}img:hover{box-shadow:0 0 40px rgba(0,245,255,0.4),0 0 80px rgba(255,0,255,0.2);transform:scale(1.02)}code,pre{background:rgba(0,245,255,0.05)!important;border:1px solid rgba(0,245,255,0.3);border-radius:8px;box-shadow:0 0 15px rgba(0,245,255,0.1)}blockquote{border-left:4px solid var(--neon-cyan);background:linear-gradient(90deg,rgba(0,245,255,0.1),transparent);color:var(--neon-cyan)}table{border-collapse:separate;border-spacing:0;border:1px solid rgba(0,245,255,0.3);border-radius:12px;overflow:hidden}table th{background:linear-gradient(135deg,rgba(0,245,255,0.2),rgba(255,0,255,0.1));font-family:'Orbitron',sans-serif;color:var(--neon-cyan)}table tr:nth-child(even){background:rgba(0,245,255,0.03)}table tr:hover{background:rgba(255,0,255,0.05)}::-webkit-scrollbar{width:12px}::-webkit-scrollbar-track{background:var(--bg-dark)}::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--neon-cyan),var(--neon-magenta));border-radius:6px}.btn-primary{background:linear-gradient(135deg,var(--neon-cyan),var(--neon-magenta))!important;border:none!important;color:#000!important;font-weight:700;box-shadow:0 0 20px rgba(0,245,255,0.4)}.btn-primary:hover{box-shadow:0 0 40px rgba(255,0,255,0.6)!important;transform:translateY(-2px)}.alert{background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(255,0,255,0.05))!important;border-left:4px solid var(--neon-cyan)!important;border-radius:8px}::selection{background:var(--neon-magenta);color:#000}</style>
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Amber金属建模教程</h1>
+<div class="title-right">
+    <a href="https://lutra23.github.io/zous.github.io/" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/Lutra23/zous.github.io/issues/2" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题"style="display:none;">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>⚛️ Amber 金属蛋白分子动力学建模完全指南</h1>
+<blockquote>
+<p>🧪 精通金属蛋白酶的分子动力学模拟，从结构准备到生产运行的全流程解析</p>
+</blockquote>
+<hr>
+<h2>📋 目录</h2>
+<ul>
+<li><a href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86">前置知识</a></li>
+<li><a href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">准备工作</a></li>
+<li><a href="#%E8%AF%A6%E7%BB%86%E6%B5%81%E7%A8%8B">详细流程</a></li>
+<li><a href="#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
+<li><a href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">常见问题</a></li>
+</ul>
+<hr>
+<h2>🎯 前置知识</h2>
+<p>分子动力学模拟是一项复杂且需要精细准备的工作。本教程将带你完成 <strong>金属蛋白酶</strong> 的 Amber 建模全流程，包含每一步操作的具体命令和注意事项。</p>
+<h3>适用场景</h3>
+<ul>
+<li>✅ 金属蛋白酶复合物体系</li>
+<li>✅ 需要精确处理金属-配体相互作用</li>
+<li>✅ 要求高质量力场参数的体系</li>
+</ul>
+<hr>
+<h2>📦 准备工作</h2>
+<h3>环境要求</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> AmberTools 版本建议 &gt;= 20</span>
+<span class="pl-c"><span class="pl-c">#</span> Gaussian 16 (用于量子化学计算)</span>
+<span class="pl-c"><span class="pl-c">#</span> H++ Server (用于蛋白加氢)</span></pre></div>
+<h3>核心工具</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+<th>必要性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>antechamber</strong></td>
+<td>小分子参数化</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>parmchk2</strong></td>
+<td>生成力场参数</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>MCPB.py</strong></td>
+<td>金属位点建模</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>tleap</strong></td>
+<td>构建模拟体系</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>Gaussian</strong></td>
+<td>量子化学计算</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>H++</strong></td>
+<td>蛋白质加氢</td>
+<td>⭐⭐⭐</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>🔬 详细流程</h2>
+<h3>步骤 1️⃣ : 准备非标准残基</h3>
+<p><strong>任务目标</strong>：将分子对接得到的小分子进行加氢处理，并将金属离子提取为独立的 PDB 文件。</p>
+<p><strong>操作步骤</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 使用可视化工具（如 PyMOL、VMD）分离金属离子</span>
+<span class="pl-c"><span class="pl-c">#</span> 确保小分子和金属离子的结构准确</span></pre></div>
+<blockquote>
+<p>[!NOTE] 💡<br>
+<strong>关键提示</strong>：非标准残基的准确构建是整个流程的基石。所有后续操作都依赖于这一步骤的质量，请务必仔细检查结构文件。</p>
+</blockquote>
+<p><strong>验证要点</strong>：</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 小分子氢原子完整</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 金属离子单独存在</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 文件格式为 PDB</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 原子命名规范</li>
+</ul>
+<hr>
+<h3>步骤 2️⃣ : 转换小分子为 mol2 格式</h3>
+<p><strong>使用 Antechamber 进行参数化</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">antechamber -i BZE.pdb -fi pdb \
+            -o BZE.mol2 -fo mol2 \
+            -c bcc -rn BZE \
+            -at gaff -pf Y -j 5 \
+            -nc 0</pre></div>
+<p><strong>参数说明</strong>：</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">-i</code></td>
+<td>输入文件</td>
+<td>BZE.pdb</td>
+</tr>
+<tr>
+<td><code class="notranslate">-o</code></td>
+<td>输出文件</td>
+<td>BZE.mol2</td>
+</tr>
+<tr>
+<td><code class="notranslate">-c bcc</code></td>
+<td>电荷计算方法</td>
+<td>AM1-BCC</td>
+</tr>
+<tr>
+<td><code class="notranslate">-nc 0</code></td>
+<td>体系电荷数</td>
+<td>根据实际情况调整</td>
+</tr>
+<tr>
+<td><code class="notranslate">-at gaff</code></td>
+<td>原子类型</td>
+<td>GAFF 力场</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<blockquote>
+<p>[!TIP] 🚀<br>
+<strong>高级选项</strong>：对于复杂电荷体系，建议使用 <strong>Gaussian</strong> 进行 RESP 电荷计算，可获得更准确的电荷分布。</p>
+</blockquote>
+<p><strong>替代方案</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> Gaussian 计算流程</span>
+<span class="pl-c"><span class="pl-c">#</span> 1. 优化结构</span>
+<span class="pl-c"><span class="pl-c">#</span> 2. 计算 ESP 电荷</span>
+<span class="pl-c"><span class="pl-c">#</span> 3. 生成 GESP 文件</span>
+<span class="pl-c"><span class="pl-c">#</span> 4. 转换为 mol2 + frcmod</span></pre></div>
+<hr>
+<h3>步骤 3️⃣ : 生成力场参数文件</h3>
+<p><strong>使用 parmchk2 生成 frcmod</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">parmchk2 -i NDP1.mol2 -f mol2 -o NDP1.frcmod -a Y</pre></div>
+<p><strong>目的</strong>：为后续 Leap 建模准备力场参数文件。</p>
+<blockquote>
+<p>[!IMPORTANT] <g-emoji class="g-emoji" alias="warning">⚠️</g-emoji><br>
+<strong>质量检查</strong>：确保 mol2 文件的原子类型和化学环境正确。错误的原子类型会导致 frcmod 文件参数生成失败。</p>
+</blockquote>
+<p><strong>验证清单</strong>：</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> frcmod 文件成功生成</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 无 WARNING 或 ERROR 信息</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 原子类型识别正确</li>
+</ul>
+<hr>
+<h3>步骤 4️⃣ : 处理金属离子</h3>
+<p><strong>使用 Amber 专用脚本处理金属</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">./metalpdb2mol2.py -i FE.pdb -o FE.mol2 -c 2</pre></div>
+<p><strong>参数解释</strong>：</p>
+<ul>
+<li><code class="notranslate">-c 2</code>：金属离子电荷数为 +2</li>
+<li>支持的金属：Fe, Zn, Mg, Ca, Cu 等</li>
+</ul>
+<blockquote>
+<p>[!CAUTION] 🔥<br>
+<strong>重要警告</strong>：金属离子的电荷状态对模拟结果影响重大！务必通过以下方式确认电荷数：</p>
+<ul>
+<li>文献调研</li>
+<li>DFT 计算</li>
+<li>实验数据</li>
+</ul>
+</blockquote>
+<hr>
+<h3>步骤 5️⃣ : 准备标准残基 PDB</h3>
+<p><strong>蛋白质预处理</strong>：</p>
+<ol>
+<li><strong>去除溶剂和杂质</strong></li>
+<li><strong>添加氢原子</strong>（推荐使用 H++ Server）</li>
+<li><strong>去除所有非标准残基</strong></li>
+</ol>
+<p><strong>使用 H++ 加氢</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 上传到 H++ Server</span>
+<span class="pl-c"><span class="pl-c">#</span> 下载加氢后的 PDB 文件</span></pre></div>
+<p><strong>使用 Amber 命令</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">ambpdb -p 0.15_80_10_pH6.5_1OKL.top \
+       -c 0.15_80_10_pH6.5_1OKL.crd \
+       <span class="pl-k">&gt;</span> 1OKL_Hpp.pdb</pre></div>
+<blockquote>
+<p>[!WARNING] ⚡<br>
+<strong>关键注意</strong>：确保所有非标准残基（配体、离子等）已完全分离，否则会导致建模失败！</p>
+</blockquote>
+<hr>
+<h3>步骤 6️⃣ : 合并所有 PDB 文件</h3>
+<p><strong>按以下顺序合并</strong>：</p>
+<pre class="notranslate"><code class="notranslate">标准残基 → 金属离子 → 配体 → 水分子
+</code></pre>
+<p><strong>执行命令</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">cat FE.pdb CPA.pdb CPB.pdb <span class="pl-k">&gt;</span> FC_pre.pdb</pre></div>
+<p><strong>手动检查要点</strong>：</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 各部分完整性</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 无重叠原子</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 残基编号连续</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 删除 TER 行</li>
+</ul>
+<blockquote>
+<p>[!TIP] 💡<br>
+<strong>建议</strong>：使用 PyMOL 或 VMD 可视化检查合并后的结构，确保空间位置正确。</p>
+</blockquote>
+<hr>
+<h3>步骤 7️⃣ : 重新编号 PDB 文件</h3>
+<p><strong>使用 pdb4amber 工具</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 先删除 TER 行</span>
+sed -i <span class="pl-s"><span class="pl-pds">'</span>/^TER/d<span class="pl-pds">'</span></span> FC_pre.pdb
+
+<span class="pl-c"><span class="pl-c">#</span> 重新编号</span>
+pdb4amber -i FC_pre.pdb -o FC.pdb</pre></div>
+<blockquote>
+<p>[!NOTE] 📝<br>
+<strong>质量检查</strong>：重点检查金属离子和配体部分的编号，确保与后续输入文件一致。</p>
+</blockquote>
+<hr>
+<h3>步骤 8️⃣ : 创建 MCPB.py 输入文件</h3>
+<p><strong>创建 <code class="notranslate">FC.in</code> 文件</strong>：</p>
+<div class="highlight highlight-source-ini"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 输入文件配置</span>
+<span class="pl-k">original_pdb</span> = FC.pdb
+<span class="pl-k">group_name</span> = FC
+<span class="pl-k">cut_off</span> = 2.5
+
+<span class="pl-c"><span class="pl-c">#</span> 金属离子设置</span>
+<span class="pl-k">ion_ids</span> = 1
+<span class="pl-k">ion_mol2files</span> = FE.mol2
+
+<span class="pl-c"><span class="pl-c">#</span> 配体设置</span>
+<span class="pl-k">naa_mol2files</span> = <span class="pl-s"><span class="pl-pds">"</span>CPA.mol2 CPB.mol2<span class="pl-pds">"</span></span>
+<span class="pl-k">frcmod_files</span> = <span class="pl-s"><span class="pl-pds">"</span>CPA.frcmod CPB.frcmod<span class="pl-pds">"</span></span>
+
+<span class="pl-c"><span class="pl-c">#</span> 残基编号</span>
+<span class="pl-k">additional_resids</span> = <span class="pl-s"><span class="pl-pds">"</span>2 3<span class="pl-pds">"</span></span></pre></div>
+<p><strong>执行第一阶段建模</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">MCPB.py -i FC.in -s 1</pre></div>
+<blockquote>
+<p>[!IMPORTANT] <g-emoji class="g-emoji" alias="warning">⚠️</g-emoji><br>
+<strong>严格检查</strong>：输入文件中的所有路径和文件名必须准确无误，大小写敏感！</p>
+</blockquote>
+<hr>
+<h3>步骤 9️⃣ : 生成模型并手动调整</h3>
+<p><strong>自动生成内容</strong>：</p>
+<ul>
+<li>✅ 模型 PDB 文件</li>
+<li>✅ 指纹文件（.fcf）</li>
+<li>✅ Gaussian 输入文件（.com）</li>
+</ul>
+<p><strong>手动优化建议</strong>：</p>
+<pre lang="plaintext" class="notranslate"><code class="notranslate"># 在指纹文件末尾添加建连信息
+LINK 原子编号1-原子名1 原子编号2-原子名2
+</code></pre>
+<blockquote>
+<p>[!TIP] 🎯<br>
+<strong>优化策略</strong>：如果发现金属未正确配位，可手动调整指纹文件中的建连关系，确保参数准确。</p>
+</blockquote>
+<p><strong>可视化检查</strong>：</p>
+<ul>
+<li>使用 VMD 查看配位键</li>
+<li>检查键长是否合理</li>
+<li>验证配位几何构型</li>
+</ul>
+<hr>
+<h3>步骤 🔟 : 执行量子化学计算</h3>
+<p><strong>Gaussian 计算流程</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 1. 提交小模型计算（可选）</span>
+gussian <span class="pl-k">&lt;</span> small_model.com <span class="pl-k">&gt;</span> small_model.log
+
+<span class="pl-c"><span class="pl-c">#</span> 2. 提交大模型计算</span>
+gussian <span class="pl-k">&lt;</span> large_model.com <span class="pl-k">&gt;</span> large_model.log
+
+<span class="pl-c"><span class="pl-c">#</span> 3. 转换检查点文件</span>
+formchk large_model.chk large_model.fchk</pre></div>
+<blockquote>
+<p>[!CAUTION] 🔥<br>
+<strong>关键警告</strong>：Gaussian 输入文件的<strong>多重度设置</strong>必须与体系真实电子结构一致！</p>
+</blockquote>
+<p><strong>验证要点</strong>：</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 计算正常收敛</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 无 SCF 不收敛错误</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 生成 .fchk 文件</li>
+</ul>
+<hr>
+<h3>步骤 1️⃣1️⃣ : 执行最终建模</h3>
+<p><strong>完整建模流程</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> Step 2: 生成模型参数</span>
+MCPB.py -i FC.in -s 2
+
+<span class="pl-c"><span class="pl-c">#</span> Step 3a: RESP 电荷拟合</span>
+MCPB.py -i FC.in -s 3a
+
+<span class="pl-c"><span class="pl-c">#</span> Step 4: 生成 tleap 输入文件</span>
+MCPB.py -i FC.in -s 4
+
+<span class="pl-c"><span class="pl-c">#</span> 使用 tleap 构建体系</span>
+tleap -s -f FC_tleap.in <span class="pl-k">&gt;</span> FC_tleap.out</pre></div>
+<p><strong>结果检查清单</strong>：</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 输出键长、键角参数</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> 金属配位键正确识别</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> RESP 电荷合理</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Incomplete task"> tleap 无错误信息</li>
+</ul>
+<blockquote>
+<p>[!NOTE] 📊<br>
+<strong>参数验证</strong>：将生成的拓扑文件与预期结果逐一对比，避免遗漏重要参数。</p>
+</blockquote>
+<hr>
+<h3>步骤 1️⃣2️⃣ : 修复原子顺序</h3>
+<p><strong>检查原子顺序</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">cpptraj -p FC_solv.prmtop</pre></div>
+<p><strong>创建修复脚本 <code class="notranslate">fixatord.in</code></strong>：</p>
+<div class="highlight highlight-source-ini"><pre class="notranslate">fixatomorder outprefix fixed
+trajout restart fixed.FC_solv.inpcrd
+run
+quit</pre></div>
+<p><strong>执行修复</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">cpptraj -p FC_solv.prmtop \
+        -c FC_solv.inpcrd \
+        -i fixatord.in \
+        <span class="pl-k">&gt;</span> fixatord.out</pre></div>
+<blockquote>
+<p>[!WARNING] ⚡<br>
+<strong>重要提示</strong>：未修复的原子顺序问题会导致后续模拟失败！</p>
+</blockquote>
+<hr>
+<h2>🔍 参数验证</h2>
+<h3>金属位点参数检查</h3>
+<p><strong>创建检查脚本 <code class="notranslate">mcpbpy_parmed.in</code></strong>：</p>
+<div class="highlight highlight-source-ini"><pre class="notranslate">printBonds :FE1
+printAngles :FE1
+printDihedrals :FE1
+printDetails :FE1</pre></div>
+<p><strong>执行检查</strong>：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">parmed -i mcpbpy_parmed.in -p FC_solv.prmtop</pre></div>
+<h3>关键参数阈值</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>参数类型</th>
+<th>合理范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>键力常数</strong></td>
+<td>&lt; 200 kcal/(mol·Å²)</td>
+<td>过大导致刚性过强</td>
+</tr>
+<tr>
+<td><strong>平衡键距</strong></td>
+<td>&lt; 2.8 Å</td>
+<td>金属-配体距离</td>
+</tr>
+<tr>
+<td><strong>RESP 电荷</strong></td>
+<td>&lt; +1</td>
+<td>金属离子电荷</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<blockquote>
+<p>[!IMPORTANT] <g-emoji class="g-emoji" alias="warning">⚠️</g-emoji><br>
+<strong>核心要点</strong>：金属离子相关参数需要特别关注，任何异常都可能导致模拟失败或严重偏差。</p>
+</blockquote>
+<h3>参数检查要点</h3>
+<h4>🔹 平衡键距要求</h4>
+<ul>
+<li>通常应保持 <strong>&lt; 2.8 Å</strong></li>
+<li>与配体原子的键距应在合理范围内</li>
+<li><strong>建议与实验结构对比验证</strong></li>
+</ul>
+<h4>🔹 电荷分布要求</h4>
+<ul>
+<li><strong>RESP 电荷 &lt; +1</strong></li>
+<li>电荷分布应与化学环境相符</li>
+<li>需考虑整体分子的电中性</li>
+</ul>
+<h4>🔹 实践建议</h4>
+<ol>
+<li>✅ 使用 <strong>VMD/PyMOL</strong> 检查金属配位构型</li>
+<li>✅ 运行 <strong>短时间测试模拟</strong> 确认稳定性</li>
+<li>✅ 参考<strong>已发表文献</strong>中的相似体系参数</li>
+<li>✅ 必要时<strong>咨询专业人员</strong>或社区获取建议</li>
+</ol>
+<hr>
+<h2>🛠️ 常见问题排查</h2>
+<h3>问题 1: 结构畸变</h3>
+<p><strong>可能原因</strong>：</p>
+<ul>
+<li>❌ 力场参数设置错误</li>
+<li>❌ 键长/键角参数不合理</li>
+<li>❌ 金属-配体相互作用过强/过弱</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<pre class="notranslate"><code class="notranslate">检查力场参数 → 调整键常数 → 验证配位几何
+</code></pre>
+<h3>问题 2: 配位不稳定</h3>
+<p><strong>可能原因</strong>：</p>
+<ul>
+<li>❌ 金属-配体键参数不准确</li>
+<li>❌ 电荷分布不合理</li>
+<li>❌ 缺少必要的限制</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<pre class="notranslate"><code class="notranslate">优化量子化学计算 → 重新拟合RESP电荷 → 调整力场参数
+</code></pre>
+<h3>问题 3: 能量异常</h3>
+<p><strong>可能原因</strong>：</p>
+<ul>
+<li>❌ 原子重叠</li>
+<li>❌ 键连错误</li>
+<li>❌ 电荷不守恒</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<pre class="notranslate"><code class="notranslate">可视化检查 → 验证PDB文件 → 检查总电荷
+</code></pre>
+<hr>
+<h2>📚 扩展阅读</h2>
+<h3>推荐资源</h3>
+<ol>
+<li>
+<p><strong>Amber 官方文档</strong></p>
+<ul>
+<li><a href="https://ambermd.org/tutorials/advanced/tutorial20/MCPB.py_tutorial.php" rel="nofollow">MCPB.py Tutorial</a></li>
+<li><a href="https://ambermd.org/tutorials/advanced/tutorial20/" rel="nofollow">Metal Ion Parameterization</a></li>
+</ul>
+</li>
+<li>
+<p><strong>经典文献</strong></p>
+<ul>
+<li>Li P, Merz KM. <em>J Chem Theory Comput</em>. 2014</li>
+<li>Li P, Song LF, Merz KM. <em>J Phys Chem Lett</em>. 2015</li>
+</ul>
+</li>
+<li>
+<p><strong>相关工具</strong></p>
+<ul>
+<li><a href="https://github.com/Amber-MD/species">Metal Binding Site Modeling</a></li>
+<li><a href="https://ambermd.org/forcefields.php" rel="nofollow">Force Field Database</a></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>🎓 总结</h2>
+<p>完成本教程后，你将掌握：</p>
+<p>✅ <strong>完整的金属蛋白建模流程</strong><br>
+✅ <strong>金属位点参数化方法</strong><br>
+✅ <strong>量子化学与分子力学联用技术</strong><br>
+✅ <strong>参数验证和质量控制</strong></p>
+<h3>下一步</h3>
+<ul>
+<li>🔬 尝试更复杂的金属蛋白体系</li>
+<li>⚡ 优化模拟参数以获得更好性能</li>
+<li>📊 学习轨迹分析方法</li>
+<li>🚀 探索增强采样技术</li>
+</ul>
+<hr>
+<blockquote>
+<p>⚡ <strong>LUTRA LABS</strong> - 分子模拟与计算化学研究</p>
+<p>💬 如有问题，欢迎在 GitHub Issues 中讨论</p>
+<p>📧 联系方式: <a href="mailto:lutra@example.com">lutra@example.com</a></p>
+</blockquote>
+<hr>
+<p><strong>🏷️ 标签</strong>: #分子动力学 #Amber #金属蛋白 #计算化学 #MD模拟</p></div>
+<div style="font-size:small;margin-top:8px;float:right;">⚡ COPYRIGHT © 2024 LUTRA LABS · ALL RIGHTS RESERVED ⚡</div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://lutra23.github.io/zous.github.io/">LUTRA LABS</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if("2024-07-03"!=""){
+    var startSite=new Date("2024-07-03");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+cmButton=document.getElementById("cmButton");
+    span=document.createElement("span");
+    span.setAttribute("class","Counter");
+    span.innerHTML="3";
+    cmButton.appendChild(span);
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","Lutra23/zous.github.io");
+    script.setAttribute("issue-term","title");
+    
+    script.setAttribute("theme","dark_dimmed");
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script src='https://blog.liyifan.xyz/assets/cat_backtotop.js'></script><script src='https://blog.liyifan.xyz/assets/lazyload.js'></script><script src='https://blog.liyifan.xyz/assets/viewimg.js'></script><script src='./js/cyberpunk-effects.js'></script>
+
+</html>
